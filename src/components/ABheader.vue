@@ -16,6 +16,7 @@ import ABSearchBar from './ABSearchBar.vue';
                     <RouterLink to="/about">My profile</RouterLink>
                     <RouterLink to="/about">Models</RouterLink>
                     <RouterLink to="/about">Images</RouterLink>
+                    <RouterLink to="/tst">Test View</RouterLink>
                 </ul>
             </nav>
         </header>

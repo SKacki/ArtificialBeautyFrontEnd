@@ -3,20 +3,24 @@ import { defineProps } from "vue";
 import { useRouter } from "vue-router";
 
 const props = defineProps({
-  imageSrc: String,  
-  text: String       
+  author: String,
+  imageSrc: String,
+  title: String,  
+  likes: Number,
+  dislikes: Number,
+  tips: Number
 });
 
 const router = useRouter();
 
-const redirectToAbout = () => {
-  router.push({ name: "about" });
+const redirectToImageView = () => {
+  router.push({ name: "image" });
 };
 </script>
 
 <template>
     <div class="image-container">
-      <img :src="imageSrc" alt="Image" class="image" @click="redirectToAbout" />
+      <img :src="imageSrc" alt="Image" class="image" @click="redirectToImageView" />
       <input :value="text" type="text" readonly class="text-input" />
     </div>
   </template>
