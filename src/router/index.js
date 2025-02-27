@@ -23,9 +23,14 @@ const router = createRouter({
       component: () => import('../views/TestingShit.vue'),
     },
     {
-      path: '/img',
+      path: '/image/:imageId',
       name: 'image',
       component: () => import('../views/ImageView.vue'),
+    },
+    {
+      path: '/generator/',
+      name: 'generator',
+      component: () => import('../views/GeneratorView.vue'),
     },
   ],
 })

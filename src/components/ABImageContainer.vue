@@ -1,60 +1,62 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import ABImageStats from "./ABImageStats.vue";
 
 const props = defineProps({
-  author: String,
-  imageSrc: String,
-  title: String,  
+  imageId:Number,
+  imageRef: String,
+  description: String,
   likes: Number,
   dislikes: Number,
-  tips: Number
+  tips: Number,
+  comments: Number,
 });
 
+const imageStats = ref({
+  likes: props.likes,
+  dislikes: props.dislikes,
+  tips: props.tips,
+  comments:props.comments,
+});
+
+const imageSrc = computed(() => `https://localhost:44307/api/Image/GetImage?imageId=${props.imageRef}`);
 const router = useRouter();
 
 const redirectToImageView = () => {
-  router.push({ name: "image" });
+  router.push({ name: "image", params: { imageId: props.imageId } });
 };
 </script>
 
 <template>
-    <div class="image-container">
-      <img :src="imageSrc" alt="Image" class="image" @click="redirectToImageView" />
-      <input :value="text" type="text" readonly class="text-input" />
-    </div>
-  </template>
+  <div class="image-container">
+    <img :src="imageSrc" alt="Image" class="image" @click="redirectToImageView" />
+    <p class="description">{{ description }}</p>
+    <ABImageStats :stats="imageStats" />
+  </div>
+</template>
   
-  <style scoped>
-  .image-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    max-width: 200px;
-  }
-  
-  .image {
-    width: 100%;
-    border-radius: 8px;
-    object-fit: cover;
-    cursor: pointer;
-    transition: opacity 0.3s;
-  }
-  
-  .image:hover {
-    opacity: 0.8;
-  }
-  
-  .text-input {
-    width: 100%;
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    background-color: #f5f5f5;
-    text-align: center;
-    cursor: default;
-  }
-  </style>
+<style scoped>
+.image-container {
+  text-align: center;
+  background: #222;
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+}
+
+.image {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.description {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #ccc;
+  text-align: center;
+}
+</style>
   

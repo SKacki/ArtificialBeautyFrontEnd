@@ -1,22 +1,26 @@
 <script setup>
-import { ref } from "vue";
 import ABImageContainer from "./ABImageContainer.vue";
+import { useImagesStore } from "@/stores/imagesStore";
+const store = useImagesStore()
 
-const images = ref([
-  { src: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/ba3f42b7-a4e8-43a7-8b25-8b50708a85cb/original=true,quality=90/00049-3625896228.jpeg", caption: "Image 1" },
-  { src: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/ba3f42b7-a4e8-43a7-8b25-8b50708a85cb/original=true,quality=90/00049-3625896228.jpeg", caption: "Image 2" },
-  { src: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/ba3f42b7-a4e8-43a7-8b25-8b50708a85cb/original=true,quality=90/00049-3625896228.jpeg", caption: "Image 3" },
-  { src: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/ba3f42b7-a4e8-43a7-8b25-8b50708a85cb/original=true,quality=90/00049-3625896228.jpeg", caption: "Image 4" }
-]);
+const props = defineProps({
+  images: Array,
+});
 </script>
 
 <template>
     <div class="gallery">
       <ABImageContainer 
-        v-for="(image, index) in images" 
-        :key="index" 
-        :imageSrc="image.src" 
-        :text="image.caption"
+        v-for="(image, index) in images"   
+        :key="index"
+        :imageRef="image.ref" 
+        :description="image.description"
+        :likes="image.likes"
+        :dislikes="image.dislikes"
+        :tips="image.tips"
+        :comments="image.commentsCount"
+        :imgMetadata="image.metadata"
+        :imageId="image.id"
       />
     </div>
   </template>

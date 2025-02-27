@@ -1,46 +1,68 @@
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import ABMetadataTable from "@/components/ABMetadataTable.vue";
 import ABComment from "@/components/ABComment.vue";
 import ABImageStats from "@/components/ABImageStats.vue";
 
+const imgId = ref(null);
+const image = ref(null);
+const loading = ref(false);
+const error = ref(null);
 const router = useRouter();
-const imageSrc = ref("https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/2f1abb9d-f8cd-4b0c-9304-461c3ee301e8/original=true,quality=90/00240-3601054281.jpeg");
-const metadata = ref({
-  resource: "Illustrious XL 1.0",
-  prompt: "1girl, dark theme, glowing eyes, demon, sword...",
-  negativePrompt: "bad anatomy, lowres, multiple views...",
-  guidance: 3,
-  steps: 28,
-  sampler: "DPM++ 2S Ancestral CFG",
-  seed: "3601054281",
+const route = useRoute();
+const imageRef = ref(null);
+const meta = ref(null);
+const imgStats = ref(null);
+
+// Define imageSrc as a computed property
+const imageSrc = computed(() => {
+  return imageRef.value ? `https://localhost:44307/api/Image/GetImage?imageId=${imageRef.value}` : null;
 });
 
-const imageStats = ref({
-  likes: 5,
-  dislikes: 2,
-  tips: 10,
-});
+onMounted(async () => {
+   try {
+     imgId.value = route.params.imageId;
+     loading.value = true;
+     const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imgId.value}`);
+     if (!response.ok) throw new Error("Failed to fetch data");
+     const data = await response.json();
+     image.value = data;
+     assignValues(data);
+   } catch (err) {
+     error.value = err.message;
+   } finally {
+     loading.value = false;
+   }
+ });
 
-
-
-const remix = () => {
-  router.push({ name: "home" }); //Ma przenosić do widoku generatora
+const assignValues = (data) => {
+  meta.value = data.metadata;
+  imageRef.value = data.ref;
+  imgStats.value = {
+    likes: data.likes,
+    dislikes: data.dislikes,
+    tips: data.tips,
+    comments: data.commentsCount,
+  };
 };
 
+const remix = () => {
+  router.push({ name: "home" });
+};
 </script>
+
 
 <template>
   <div class="container">
     <div class="image-section">
-      <img :src="imageSrc" alt="Generated Image" class="image" />
-      <ABImageStats :likes="imageStats.likes" :dislikes="imageStats.dislikes" :tips="imageStats.tips" />
+      <img :src=imageSrc alt="Generated Image" class="image" />
+      <ABImageStats :stats="imgStats" />
     </div>
     <div class="info-section">
-      <ABMetadataTable :metadata="metadata" />
+      <ABMetadataTable :metadata="meta" />
       <ABComment />
-      <button class="home-button" @click="remix">Remix image</button>
+      <button class="remix-button" @click="remix">Remix image</button>
     </div>
   </div>
 </template>
@@ -63,4 +85,12 @@ const remix = () => {
   border-radius: 8px;
   object-fit: cover;
 }
+.remix-button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #ffcc00;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 </style>

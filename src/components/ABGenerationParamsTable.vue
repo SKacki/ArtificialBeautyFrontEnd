@@ -1,7 +1,19 @@
 <script setup>
+import { ref } from "vue";
+
 defineProps({
   metadata: Object,
 });
+
+const samplers = ref(
+    [
+        "Euler",
+        "Euler_A",
+        "Karras",
+        "Huen",
+        "DMP2"
+    ]);
+
 </script>
 
 <template>
@@ -10,27 +22,27 @@ defineProps({
     <table class="metadata-table">
       <tr>
         <th>Resource Used</th>
-        <td><div class="scrollable">{{ metadata?.sampler }}</div></td>
+        <td>
+          <select v-model="metadata.sampler">
+            <option v-for="sampler in samplers" :key="sampler" :value="sampler">{{ sampler }}</option>
+          </select>
+        </td>
       </tr>
       <tr>
         <th>Prompt</th>
-        <td><div class="scrollable">{{ metadata?.promptPoz }}</div></td>
+        <td><input type="text" v-model="metadata.promptPoz" class="text-field" /></td>
       </tr>
       <tr>
         <th>Negative Prompt</th>
-        <td><div class="scrollable">{{ metadata?.promptNeg }}</div></td>
+        <td><input type="text" v-model="metadata.promptNeg" class="text-field" /></td>
       </tr>
       <tr>
         <th>Guidance</th>
-        <td><div class="scrollable">{{ metadata?.guidance }}</div></td>
+        <td><input type="range" v-model="metadata.guidance" min="0" max="100" /></td>
       </tr>
       <tr>
         <th>Steps</th>
-        <td><div class="scrollable">{{ metadata?.steps }}</div></td>
-      </tr>
-      <tr>
-        <th>Sampler</th>
-        <td><div class="scrollable">{{ metadata?.sampler }}</div></td>
+        <td><input type="range" v-model="metadata.steps" min="0" max="100" /></td>
       </tr>
       <tr>
         <th>Seed</th>
@@ -90,5 +102,12 @@ defineProps({
 
 .scrollable::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.text-field {
+  width: 100%;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 </style>

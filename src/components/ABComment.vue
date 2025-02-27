@@ -30,6 +30,7 @@ const addComment = () => {
   
   <style scoped>
   .comments-section {
+    max-width: 700px;
     margin-top: 20px;
     padding: 15px;
     background: #222;
@@ -38,6 +39,7 @@ const addComment = () => {
   }
   
   textarea {
+    max-width: 700px;
     width: 100%;
     padding: 8px;
     background: #333;

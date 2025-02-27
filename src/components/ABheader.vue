@@ -14,6 +14,8 @@ import ABSearchBar from './ABSearchBar.vue';
                 <ul class="nav-routes">
                     <RouterLink to="/">Generator</RouterLink>
                     <RouterLink to="/about">My profile</RouterLink>
+                    <RouterLink to="/generator"><span class="icon">🎨</span>
+                      <span>Create</span></RouterLink>
                     <RouterLink to="/about">Models</RouterLink>
                     <RouterLink to="/about">Images</RouterLink>
                     <RouterLink to="/tst">Test View</RouterLink>
