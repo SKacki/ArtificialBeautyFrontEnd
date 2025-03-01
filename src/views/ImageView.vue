@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import ABMetadataTable from "@/components/ABMetadataTable.vue";
-import ABComment from "@/components/ABComment.vue";
-import ABImageStats from "@/components/ABImageStats.vue";
+import ABMetadataTable from "@/components/ImagesComponents/ABMetadataTable.vue";
+import ABComment from "@/components/CommentsComponents/ABComment.vue";
+import ABImageStats from "@/components/ImagesComponents/ABImageStats.vue";
 
 const imgId = ref(null);
 const image = ref(null);
@@ -14,8 +14,8 @@ const route = useRoute();
 const imageRef = ref(null);
 const meta = ref(null);
 const imgStats = ref(null);
+const imgComments = ref(null);
 
-// Define imageSrc as a computed property
 const imageSrc = computed(() => {
   return imageRef.value ? `https://localhost:44307/api/Image/GetImage?imageId=${imageRef.value}` : null;
 });
@@ -45,10 +45,11 @@ const assignValues = (data) => {
     tips: data.tips,
     comments: data.commentsCount,
   };
+  imgComments.value = data.comments;
 };
 
 const remix = () => {
-  router.push({ name: "home" });
+  router.push({ name: "generator", params: { imageId: imgId.value }});
 };
 </script>
 
@@ -61,7 +62,7 @@ const remix = () => {
     </div>
     <div class="info-section">
       <ABMetadataTable :metadata="meta" />
-      <ABComment />
+      <ABComment :imgComments="imgComments"/>
       <button class="remix-button" @click="remix">Remix image</button>
     </div>
   </div>

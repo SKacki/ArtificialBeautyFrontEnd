@@ -37,6 +37,7 @@ async function xyz() {
   display: flex;
   transition: 250ms ease;
   border: 2px solid #41b080;
+  margin: 9px;
 
   &:focus-within {
     box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1),

@@ -28,10 +28,10 @@ const router = createRouter({
       component: () => import('../views/ImageView.vue'),
     },
     {
-      path: '/generator/',
+      path: '/generator/:imageId?',
       name: 'generator',
       component: () => import('../views/GeneratorView.vue'),
-    },
+    },  
   ],
 })
 

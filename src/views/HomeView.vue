@@ -25,7 +25,10 @@ onMounted(async () => {
 <template>
   <main>
     <div class="gallery">
-      <ABGallery :images="images" />
+      <ABGallery :images="images" :header="'Featured Images'" />
+  </div>
+  <div class="gallery">
+      <ABGallery :images="images" :header="'Featured Models'" />
   </div>
   </main>
 </template>

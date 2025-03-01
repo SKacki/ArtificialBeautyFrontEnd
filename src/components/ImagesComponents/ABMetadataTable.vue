@@ -1,19 +1,7 @@
 <script setup>
-import { ref } from "vue";
-
 defineProps({
   metadata: Object,
 });
-
-const samplers = ref(
-    [
-        "Euler",
-        "Euler_A",
-        "Karras",
-        "Huen",
-        "DMP2"
-    ]);
-
 </script>
 
 <template>
@@ -22,27 +10,39 @@ const samplers = ref(
     <table class="metadata-table">
       <tr>
         <th>Resource Used</th>
-        <td>
-          <select v-model="metadata.sampler">
-            <option v-for="sampler in samplers" :key="sampler" :value="sampler">{{ sampler }}</option>
-          </select>
-        </td>
+        <td><div class="scrollable">{{ metadata?.modelName }}</div></td>
+      </tr>
+      <tr v-if="metadata?.lora1Name">
+        <th>Additional Resources</th>
+        <td><div class="scrollable">{{ metadata?.lora1Name }}</div></td>
+      </tr>
+      <tr v-if="metadata?.lora2Name">
+        <th>Additional Resources</th>
+        <td><div class="scrollable">{{ metadata?.lora2Name }}</div></td>
       </tr>
       <tr>
         <th>Prompt</th>
-        <td><input type="text" v-model="metadata.promptPoz" class="text-field" /></td>
+        <td><div class="scrollable">{{ metadata?.promptPoz }}</div></td>
       </tr>
       <tr>
         <th>Negative Prompt</th>
-        <td><input type="text" v-model="metadata.promptNeg" class="text-field" /></td>
+        <td><div class="scrollable">{{ metadata?.promptNeg }}</div></td>
       </tr>
       <tr>
         <th>Guidance</th>
-        <td><input type="range" v-model="metadata.guidance" min="0" max="100" /></td>
+        <td><div class="scrollable">{{ metadata?.guidance }}</div></td>
       </tr>
       <tr>
         <th>Steps</th>
-        <td><input type="range" v-model="metadata.steps" min="0" max="100" /></td>
+        <td><div class="scrollable">{{ metadata?.steps }}</div></td>
+      </tr>
+      <tr>
+        <th>Sampler</th>
+        <td><div class="scrollable">{{ metadata?.sampler }}</div></td>
+      </tr>
+      <tr>
+        <th>Scheduler</th>
+        <td><div class="scrollable">{{ metadata?.scheduler }}</div></td>
       </tr>
       <tr>
         <th>Seed</th>
@@ -55,7 +55,7 @@ const samplers = ref(
 <style scoped>
 .metadata-section {
   min-width: 600px;
-  max-width: 700px;
+  max-width: 600px;
   background: #1a1a1a;
   padding: 15px;
   border-radius: 8px;
@@ -102,12 +102,5 @@ const samplers = ref(
 
 .scrollable::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
-}
-
-.text-field {
-  width: 100%;
-  padding: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
 }
 </style>

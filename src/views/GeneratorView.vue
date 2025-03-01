@@ -1,32 +1,52 @@
 <script setup>
-import { ref} from "vue";
-import ABGenerationParamsTable from "@/components/ABGenerationParamsTable.vue";
+import { ref, onMounted,computed } from "vue";
+import { useRoute } from "vue-router";
+import ABGenerationParamsTable from "@/components/GeneratorComponents/ABGenerationParamsTable.vue";
+import placeholder from '@/assets/placeholder.png';
 
+const route = useRoute();
+const imageSrc = computed(() => {
+  return route.params.imageId > 0 ? `https://localhost:44307/api/Image/GetImageById?imageId=${route.params.imageId}` : placeholder;
+});
 const meta = ref({
+  modelId: 1,
+  lora1Id: null,
+  lora2Id: null,
   sampler: "",
+  scheduler: "",
+  guidance: 1,
+  steps: 10,
+  seed: 0,
   promptPoz: "",
   promptNeg: "",
-  guidance: "",
-  steps: "",
-  seed: ""
+  genDate: null
 });
 
-//const imageSrc = ref(`https://localhost:44307/api/Image/GetImage?imageId=${imageRef.value}`);
-const imageSrc = ref(null);
-const handleImageError = (event) => {
-  event.target.src = "../src/img/placeholder.png";
+const fetchMetadata = async () => {
+  const imageId = route.params.imageId;
+  if (!imageId) return;
+
+  try {
+    const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imageId}`);
+    if (!response.ok) throw new Error("Failed to fetch metadata");
+
+    const data = await response.json();
+    meta.value = { ...meta.value, ...data.metadata };
+  } catch (error) {
+    console.error("API Error:", error);
+  }
 };
 
+onMounted(fetchMetadata);
 </script>
 
 <template>
   <div class="container">
     <div class="image-section">
-        <img :src="imageSrc" @error="handleImageError" alt="not found" class="image"/>
+        <img :src="imageSrc" :alt="placeholder" class="image"/>
     </div>
     <div class="info-section">
       <ABGenerationParamsTable :metadata="meta" />
-      <button class="remix-button" @click="remix">Remix image</button>
     </div>
   </div>
 </template>
@@ -48,14 +68,5 @@ const handleImageError = (event) => {
   width: 100%;
   border-radius: 8px;
   object-fit: cover;
-}
-
-.remix-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #ffcc00;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 </style>

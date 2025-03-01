@@ -1,12 +1,10 @@
 <script setup>
 import { ref,watch, defineProps } from "vue";
 
-// Define Props
 const props = defineProps({
   stats: Object,
 });
 
-// Reactive state for counters (initialize properly)
 const likesCount = ref(props.stats?.likes ?? 0);
 const dislikesCount = ref(props.stats?.dislikes ?? 0);
 const tipsCount = ref(props.stats?.tips ?? 0);
@@ -14,7 +12,6 @@ const commentsCount = ref(props.stats?.comments ?? 0);
 
 const alreadyVoted = ref(false);
 
-// Watch for changes in props.stats
 watch(
   () => props.stats,
   (newStats) => {
@@ -25,13 +22,12 @@ watch(
       commentsCount.value = newStats.comments ?? 0;
     }
   },
-  { immediate: true } // Runs the watcher immediately when component mounts
+  { immediate: true }
 );
 
-// Methods to update counters safely
 const handleLike = () => {
   if (!alreadyVoted.value) {
-    likesCount.value++;  // Modify the local reactive state, not props
+    likesCount.value++;
     alreadyVoted.value = true;
   }
 };
@@ -48,7 +44,6 @@ const handleTip = () => {
 };
 
 const handleComment = () => {
-  // Logic for handling comments
 };
 </script>
 
@@ -77,9 +72,9 @@ const handleComment = () => {
 .stats-section {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 5px;
   margin-top: 15px;
-  padding: 10px;
+  padding: 5px;
   background: #222;
   border-radius: 8px;
   color: white;
@@ -94,7 +89,6 @@ const handleComment = () => {
   border: none;
   color: white;
   cursor: pointer;
-  padding: 5px 10px;
   border-radius: 5px;
   transition: background 0.2s;
 }

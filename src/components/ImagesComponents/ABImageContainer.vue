@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import ABImageStats from "./ABImageStats.vue";
+import ABImageStats from "./ImagesComponents/ABImageStats.vue";
 
 const props = defineProps({
   imageId:Number,
@@ -32,7 +32,7 @@ const redirectToImageView = () => {
   <div class="image-container">
     <img :src="imageSrc" alt="Image" class="image" @click="redirectToImageView" />
     <p class="description">{{ description }}</p>
-    <ABImageStats :stats="imageStats" />
+    <div class="stats-container"><ABImageStats :stats="imageStats" /></div>
   </div>
 </template>
   
@@ -44,7 +44,15 @@ const redirectToImageView = () => {
   border-radius: 8px;
   color: white;
 }
-
+.stats-container {
+  align-content: flex-start;
+  text-align: center;
+  align-items: flex-start;
+  background: #222;
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+}
 .image {
   width: 100%;
   max-width: 500px;
