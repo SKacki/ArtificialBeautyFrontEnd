@@ -1,14 +1,18 @@
 <script setup>
 import { ref,watch, defineProps } from "vue";
+import { useToast } from 'vue-toastification';
 
 const props = defineProps({
   stats: Object,
 });
 
+
+const toast = useToast();
 const likesCount = ref(props.stats?.likes ?? 0);
 const dislikesCount = ref(props.stats?.dislikes ?? 0);
 const tipsCount = ref(props.stats?.tips ?? 0);
 const commentsCount = ref(props.stats?.comments ?? 0);
+const show = ref(false);
 
 const alreadyVoted = ref(false);
 
@@ -43,11 +47,16 @@ const handleTip = () => {
   tipsCount.value += 10;
 };
 
-const handleComment = () => {
+const showToast = () => {
+  toast.success("This is a success message!");
+  toast.error("Oops! Something went wrong.");
+  toast.info("I'm an info toast!");
 };
+
 </script>
 
 <template>
+  <Toast v-if="show" message="This is a toast notification!" />
   <div class="stats-section">
     <button class="stat-button" @click="handleLike">
       <span class="icon">👍</span>
@@ -61,7 +70,7 @@ const handleComment = () => {
       <span class="icon">💰</span>
       <span>{{ tipsCount }}</span>
     </button>
-    <button class="stat-button" @click="handleComment">
+    <button class="stat-button" @click="showToast">
       <span class="icon">💬</span>
       <span>{{ commentsCount }}</span>
     </button>

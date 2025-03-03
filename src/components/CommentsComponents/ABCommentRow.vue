@@ -16,10 +16,10 @@ const formattedDate = computed(() => {
 <template>
   <li class="comment-row">
     <div class="comment-header">
-      <span class="comment-author">{{ comment?.userName }}</span>
+      <span class="comment-author">{{ comment.userName }}</span>
       <span class="comment-date">{{ formattedDate }}</span>
     </div>
-    <p class="comment-text">{{ comment?.commentText }}</p>
+    <p class="comment-text">{{ comment.commentText }}</p>
   </li>
 </template>
 

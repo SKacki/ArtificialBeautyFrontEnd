@@ -1,10 +1,29 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import ABheader from './components/ABheader.vue';
+import { ref, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/stores/UserStore";
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+const loadingUser = ref(true);
+
+
+onMounted(async () => {
+  try {
+    await userStore.fetchData();
+  } catch (err) {
+    console.error("Failed to load user data:", err);
+  } finally {
+    loadingUser.value = false;
+  }
+});
 </script>
 
 <template>
-  <ABheader />
+  <div v-if="loadingUser">Loading ...</div>
+  <ABheader v-else :user="user.user" />
   <RouterView />
 </template>
 

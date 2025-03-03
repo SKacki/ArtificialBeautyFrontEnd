@@ -2,19 +2,9 @@
 import {ref} from "vue";
 
 const searchTerm = ref("");
-const selectedOption = ref('images')
-async function xyz() {
-  if(selectedOption.value === 'images'){
-    const response = await fetch("https://localhost:44307/api/Generator/HealthCheck?code=1");
-    if (!response.ok) throw new Error("Failed to fetch data");
-    users.value = await response.json();
-  } else if(selectedOption.value === 'models') {
-    console.log('modelki')
-  } else {
-    console.log('uzytkownicy')
-  }
-  console.log(searchTerm.value)
-  console.log(selectedOption.value)
+const selectedOption = ref("")
+async function search() {
+
 }
 </script>
 
@@ -28,7 +18,7 @@ async function xyz() {
       
       <input type="text" v-model="searchTerm" class="search-bar">
       
-      <button class="search-btn" @click="xyz">Search</button>
+      <button class="search-btn" @click="search">Search</button>
     </div>
   </template>
 

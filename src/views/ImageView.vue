@@ -4,6 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import ABMetadataTable from "@/components/ImagesComponents/ABMetadataTable.vue";
 import ABComment from "@/components/CommentsComponents/ABComment.vue";
 import ABImageStats from "@/components/ImagesComponents/ABImageStats.vue";
+import { useToast } from 'vue-toastification';
 
 const imgId = ref(null);
 const image = ref(null);
@@ -15,6 +16,7 @@ const imageRef = ref(null);
 const meta = ref(null);
 const imgStats = ref(null);
 const imgComments = ref(null);
+const toast = useToast();
 
 const imageSrc = computed(() => {
   return imageRef.value ? `https://localhost:44307/api/Image/GetImage?imageId=${imageRef.value}` : null;
@@ -34,6 +36,30 @@ onMounted(async () => {
    } finally {
      loading.value = false;
    }
+   try {
+     imgId.value = route.params.imageId;
+     loading.value = true;
+     const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imgId.value}`);
+     if (!response.ok) throw new Error("Failed to fetch data");
+     const data = await response.json();
+     meta.value = data;
+   } catch (err) {
+     error.value = err.message;
+   } finally {
+     loading.value = false;
+   }
+   try {
+     imgId.value = route.params.imageId;
+     loading.value = true;
+     const response = await fetch(`https://localhost:44307/api/Image/GetImageComments?imageId=${imgId.value}`);
+     if (!response.ok) throw new Error("Failed to fetch data");
+     const data = await response.json();
+     imgComments.value = data;
+   } catch (err) {
+     error.value = err.message;
+   } finally {
+     loading.value = false;
+   }
  });
 
 const assignValues = (data) => {
@@ -45,12 +71,17 @@ const assignValues = (data) => {
     tips: data.tips,
     comments: data.commentsCount,
   };
-  imgComments.value = data.comments;
+  //imgComments.value = data.comments;
 };
 
 const remix = () => {
   router.push({ name: "generator", params: { imageId: imgId.value }});
 };
+
+const publish = () => {
+  toast.info("Clicky!")
+};
+
 </script>
 
 
@@ -63,7 +94,8 @@ const remix = () => {
     <div class="info-section">
       <ABMetadataTable :metadata="meta" />
       <ABComment :imgComments="imgComments"/>
-      <button class="remix-button" @click="remix">Remix image</button>
+      <button class="image-buttons" @click="remix">Remix image</button>
+      <button class="image-buttons" @click="publish">Publish image</button>
     </div>
   </div>
 </template>
@@ -86,8 +118,9 @@ const remix = () => {
   border-radius: 8px;
   object-fit: cover;
 }
-.remix-button {
+.image-buttons {
     margin-top: 10px;
+    margin-right:5px;
     padding: 8px 12px;
     background: #ffcc00;
     border: none;

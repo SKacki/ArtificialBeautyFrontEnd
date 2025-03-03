@@ -1,25 +1,54 @@
 <script setup>
 import ABGallery from "@/components/ABGallery.vue";
 import { ref, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/stores/UserStore";
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+const loadingUser = ref(true);
+const loadingImages = ref(false);
+const loadingModels = ref(false); 
 
 const images = ref([]);
-const loading = ref(false);
+const models = ref([]);
+
 const error = ref(null);
 
 onMounted(async () => {
-   try {
-     loading.value = true
-     const response = await fetch("https://localhost:44307/api/View/GetfeatureImages");
-     if (!response.ok) throw new Error("Failed to fetch data");
-     const data = await response.json();
-     images.value = data.images;
-   } catch (err) {
-     error.value = err.message;
-   } finally {
-     loading.value = false;
-   }
- });
+  try {
+    await userStore.fetchData();
+  } catch (err) {
+    console.error("Failed to load user data:", err);
+  } finally {
+    loadingUser.value = false;
+  }
 
+  try {
+    loadingImages.value = true;
+    const response = await fetch("https://localhost:44307/api/View/GetfeatureImages");
+    if (!response.ok) throw new Error("Failed to fetch images");
+
+    const data = await response.json();
+    images.value = data.images;
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    loadingImages.value = false;
+  }
+  try {
+    loadingModels.value = true;
+    const response = await fetch("https://localhost:44307/api/View/GetfeatureModels");
+    if (!response.ok) throw new Error("Failed to fetch models");
+
+    const data = await response.json();
+    models.value = data.images;
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    loadingModels.value = false;
+  }
+});
 </script>
 
 <template>
@@ -28,7 +57,7 @@ onMounted(async () => {
       <ABGallery :images="images" :header="'Featured Images'" />
   </div>
   <div class="gallery">
-      <ABGallery :images="images" :header="'Featured Models'" />
+      <ABGallery :images="models" :header="'Featured Models'" />
   </div>
   </main>
 </template>

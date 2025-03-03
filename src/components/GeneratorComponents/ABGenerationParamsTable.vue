@@ -1,5 +1,8 @@
 <script setup>
 import { reactive,ref, computed, onMounted, watch } from "vue";
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 const props = defineProps({
   metadata: Object,
@@ -36,6 +39,7 @@ const sendGenerationRequest = async () => {
   } catch (error) {
     console.error("API Error:", error);
   }
+  finally{toast.success('Your image is generating')}
 };
 
 const handleSeed = () => {
