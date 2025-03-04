@@ -14,11 +14,6 @@ const router = createRouter({
       component: () => import('../views/UserProfileView.vue'),
     },
     {
-      path: '/tst',
-      name: 'tst',
-      component: () => import('../views/TestingShit.vue'),
-    },
-    {
       path: '/image/:imageId',
       name: 'image',
       component: () => import('../views/ImageView.vue'),
@@ -32,7 +27,12 @@ const router = createRouter({
       path: '/transactions/:userId?',
       name: 'transactions',
       component: () => import('../views/TransactionsView.vue'),
-    },  
+    },
+    {
+      path: '/images',
+      name: 'images',
+      component: () => import('../views/ImagesGalleryView.vue'),
+    },   
   ],
 })
 

@@ -12,7 +12,7 @@ const loadingUser = ref(true);
 
 onMounted(async () => {
   try {
-    await userStore.fetchData();
+    await userStore.fetchData(1);
   } catch (err) {
     console.error("Failed to load user data:", err);
   } finally {
@@ -23,7 +23,7 @@ onMounted(async () => {
 
 <template>
   <div v-if="loadingUser">Loading ...</div>
-  <ABheader v-else :user="user.user" />
+  <ABheader v-else :user="user" />
   <RouterView />
 </template>
 

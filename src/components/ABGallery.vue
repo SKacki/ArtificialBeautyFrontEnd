@@ -4,6 +4,7 @@ import ABGalleryImageContainer from "./ABGalleryImageContainer.vue";
 
 const props = defineProps({
   images: Array,
+  user:Object,
   header:String,
 });
 
@@ -51,6 +52,7 @@ const prevPage = () => {
         :type ="type"
         :userId="image.userId"
         :userName="image.userName"
+        :user="props.user"
       />
     </div>
 

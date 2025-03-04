@@ -1,8 +1,8 @@
 <script setup>
 import ABGallery from "@/components/ABGallery.vue";
 import { ref, onMounted } from "vue";
-import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
+import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
@@ -17,7 +17,7 @@ const error = ref(null);
 
 onMounted(async () => {
   try {
-    await userStore.fetchData();
+    await userStore.fetchData(1);
   } catch (err) {
     console.error("Failed to load user data:", err);
   } finally {
@@ -54,10 +54,10 @@ onMounted(async () => {
 <template>
   <main>
     <div class="gallery">
-      <ABGallery :images="images" :header="'Featured Images'" />
+      <ABGallery :images="images" :user="user" :header="'Featured Images'" />
   </div>
   <div class="gallery">
-      <ABGallery :images="models" :header="'Featured Models'" />
+      <ABGallery :images="models" :user="user" :header="'Featured Models'" />
   </div>
   </main>
 </template>

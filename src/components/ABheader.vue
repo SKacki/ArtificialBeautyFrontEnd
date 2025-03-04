@@ -32,7 +32,7 @@ const redirectToView = (view) => {
           <RouterLink to="/" class="nav-item">
             <span class="icon">🤖</span> <span>Models</span>
           </RouterLink>
-          <RouterLink to="/" class="nav-item">
+          <RouterLink to="/images" class="nav-item">
             <span class="icon">🖼️</span> <span>Images</span>
           </RouterLink>
           <RouterLink to="/transactions/1" class="nav-item">

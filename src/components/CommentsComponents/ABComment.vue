@@ -1,39 +1,59 @@
 <script setup>
-import { watch,ref } from "vue";
+import { watch, ref } from "vue";
 import ABCommentRow from "./ABCommentRow.vue";
 import { useRoute } from "vue-router";
+import { useOperationsStore } from "@/stores/OperationsStore";
+import { useToast } from "vue-toastification";
 
-const route = useRoute();
 const props = defineProps({
   imgComments: Array,
+  user: Object
 });
 
+const OperationsStore = useOperationsStore();
+const route = useRoute();
+const toast = useToast();
 const newComment = ref("");
 const comments = ref([]);
 
 watch(
   () => props.imgComments,
   (newVals) => {
-    comments.value = newVals
+    comments.value = newVals;
+    comments.value = newVals.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
   },
-  { immediate: true }
+  //{ immediate: true } <-this throws errors
 );
 
+const addComment = async () => {
+  if (newComment.value.trim() !== "") 
+  {
+    console.log()
+    const data =
+      {
+        userId: props.user.id,
+        imageId: parseInt(route.params.imageId),
+        commentText: newComment.value,
+        userName: props.user.userName,
+        createdDate: new Date().toISOString()
+      };
+      
+    const result =  await OperationsStore.postComment(data);
 
-const addComment = () => {
-  if (newComment.value.trim() !== "") {
-    comments.value.push({
-      id:null,
-      userId: null,
-      imageId: route.params.imageId,
-      commentText: newComment.value,
-      userName: "GuestUser",
-      createdDate: new Date().toLocaleString(),
-    });
-    newComment.value = "";
+    if(result.status !== 200)
+    {
+      if(result.status === 290)
+        toast.error(result.data.message);
+    }
+    else
+    {
+      comments.value.unshift(data);
+      newComment.value = "";
+    }
   }
 };
 </script>
+
 
 <template>
   <div class="comments-section">

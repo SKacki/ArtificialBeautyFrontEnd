@@ -54,6 +54,7 @@ defineProps({
 
 <style scoped>
 .metadata-section {
+  margin-bottom: 0.3rem;
   min-width: 600px;
   max-width: 600px;
   background: #1a1a1a;

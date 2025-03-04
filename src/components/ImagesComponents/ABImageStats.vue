@@ -1,20 +1,23 @@
 <script setup>
 import { ref,watch, defineProps } from "vue";
 import { useToast } from 'vue-toastification';
+import { useRoute } from "vue-router";
+import { useOperationsStore } from "@/stores/OperationsStore";
+
+const OperationsStore = useOperationsStore();
 
 const props = defineProps({
   stats: Object,
+  imageId:Number,
+  user:Object
 });
-
 
 const toast = useToast();
 const likesCount = ref(props.stats?.likes ?? 0);
 const dislikesCount = ref(props.stats?.dislikes ?? 0);
 const tipsCount = ref(props.stats?.tips ?? 0);
 const commentsCount = ref(props.stats?.comments ?? 0);
-const show = ref(false);
-
-const alreadyVoted = ref(false);
+const route = useRoute();
 
 watch(
   () => props.stats,
@@ -29,34 +32,80 @@ watch(
   { immediate: true }
 );
 
-const handleLike = () => {
-  if (!alreadyVoted.value) {
+const sendReaction = async (reaction) => {
+  const data = 
+    {
+      UserId: props.user.id,
+      ImageId: props.imageId,//route.params.imageId,
+      Type: reaction 
+    }
+  return await OperationsStore.sendReaction(data);
+}
+
+const sendTip = async () => {
+  const data = 
+    {
+      UserId: props.user.id,
+      ImageId: props.imageId,//route.params.imageId,
+      Amount: 10 
+    }
+  return await OperationsStore.sendTip(data);
+}
+
+const handleLike = async() => {
+  const result = await sendReaction(1);
+  if(result.status === 200)
+  {
     likesCount.value++;
-    alreadyVoted.value = true;
+  }
+  if(result.status === 290)
+  {
+    toast.error(result.data.message);
+  }
+  if(result.status === 291)
+  {
+    toast.info(result.data.message);
   }
 };
 
-const handleDislike = () => {
-  if (!alreadyVoted.value) {
+const handleDislike  = async() => {
+  const result = await sendReaction(-1);
+  if(result.status === 200)
+  {
     dislikesCount.value++;
-    alreadyVoted.value = true;
+  }
+  if(result.status === 290)
+  {
+    toast.error(result.data.message);
+  }
+  if(result.status === 291)
+  {
+    toast.info(result.data.message);
   }
 };
 
-const handleTip = () => {
-  tipsCount.value += 10;
-};
+const handleTip = async() => {
+  const result = await sendTip();
+  if(result.status === 200)
+  {
+    toast.success("tipped 10 💰")
+    props.user.currency -=10;
+    tipsCount.value += 10;
+  }
+  if(result.status === 290)
+  {
+    toast.error(result.data.message);
+  }
+  if(result.status === 291)
+  {
+    toast.info(result.data.message);
+  }
 
-const showToast = () => {
-  toast.success("This is a success message!");
-  toast.error("Oops! Something went wrong.");
-  toast.info("I'm an info toast!");
 };
 
 </script>
 
 <template>
-  <Toast v-if="show" message="This is a toast notification!" />
   <div class="stats-section">
     <button class="stat-button" @click="handleLike">
       <span class="icon">👍</span>

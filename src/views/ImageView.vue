@@ -5,6 +5,12 @@ import ABMetadataTable from "@/components/ImagesComponents/ABMetadataTable.vue";
 import ABComment from "@/components/CommentsComponents/ABComment.vue";
 import ABImageStats from "@/components/ImagesComponents/ABImageStats.vue";
 import { useToast } from 'vue-toastification';
+import { useUserStore } from "@/stores/UserStore";
+import { storeToRefs } from "pinia";
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+
 
 const imgId = ref(null);
 const image = ref(null);
@@ -71,7 +77,6 @@ const assignValues = (data) => {
     tips: data.tips,
     comments: data.commentsCount,
   };
-  //imgComments.value = data.comments;
 };
 
 const remix = () => {
@@ -89,11 +94,11 @@ const publish = () => {
   <div class="container">
     <div class="image-section">
       <img :src=imageSrc alt="Generated Image" class="image" />
-      <ABImageStats :stats="imgStats" />
+      <ABImageStats :stats="imgStats" :user="user" :imageId="imgId" />
     </div>
     <div class="info-section">
       <ABMetadataTable :metadata="meta" />
-      <ABComment :imgComments="imgComments"/>
+      <ABComment :imgComments="imgComments" :user="user"/>
       <button class="image-buttons" @click="remix">Remix image</button>
       <button class="image-buttons" @click="publish">Publish image</button>
     </div>

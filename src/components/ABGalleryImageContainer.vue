@@ -14,7 +14,8 @@ const props = defineProps({
   modelId:Number,
   type:String,
   userId:Number,
-  userName:String
+  userName:String,
+  user:Object
 });
 
 const imageStats = ref({
@@ -23,6 +24,12 @@ const imageStats = ref({
   tips: props.tips,
   comments:props.comments,
 });
+
+const user = ref(
+  {
+    userId: props.userId,
+    userName: props.userName
+  });
 
 const imageSrc = computed(() => `https://localhost:44307/api/Image/GetImage?imageId=${props.imageRef}`);
 const router = useRouter();
@@ -51,7 +58,7 @@ const redirectToView = () => {
       <span class="username" @click="redirectToUserProfile">{{ props.userName }}</span>
     </p>
     <div class="stats-container">
-      <ABImageStats :stats="imageStats" />
+      <ABImageStats :stats="imageStats" :imageId="imageId" :user="props.user" />
     </div>
   </div>
 </template>
