@@ -65,6 +65,7 @@ defineProps({
 
 .metadata-table {
   width: 100%;
+  max-width: 600px;
   border-collapse: collapse;
 }
 
@@ -86,6 +87,7 @@ defineProps({
 
 .scrollable {
   max-height: 80px;
+  max-width: 400px;
   overflow-y: auto;
   word-wrap: break-word;
   white-space: pre-wrap;

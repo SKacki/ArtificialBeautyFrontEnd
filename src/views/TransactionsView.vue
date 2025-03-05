@@ -1,24 +1,24 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, watch } from "vue";
+import { useOperationsStore } from "@/stores/OperationsStore";
+import { storeToRefs } from "pinia";
 
-const route = useRoute();
-const loading = ref(false);
-const transactions = ref([]);
+const opStore = useOperationsStore();
+const { operations } = storeToRefs(opStore);
+const sortDescending = ref(true);
+
 const fetchTransactions = async () => {
-
   try {
-    loading.value = true;
-    const response = await fetch(`https://localhost:44307/api/User/GetOperationHistory?userId=${route.params.userId}`);
-    if (!response.ok) throw new Error("Failed to fetch transactions");
-    
-    transactions.value = await response.json();
-  } catch (error) {
-    console.error("Error fetching transactions:", error);
+    await opStore.fetchOperations(1);
+  } catch (err) {
+    console.error("Failed to load transactions:", err);
   }
-  finally
+
+  const sortArr = () => 
   {
-    loading.value=false;
+    console.log('click!')
+    operations.sort((a, b) => new Date(b.operationDate) - new Date(a.operationDate));
+    sortDescending.value = !sortDescending.value
   }
 };
 
@@ -41,8 +41,8 @@ const formatDate = (dateString) => {
           <th>Description</th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(transaction, index) in transactions" :key="index">
+      <tbody v-if="operations">
+        <tr v-for="(transaction, index) in operations.sort((a, b) => new Date(b.operationDate) - new Date(a.operationDate))" :key="index">
           <td>{{ formatDate(transaction.operationDate) }}</td>
           <td :class="{ 'negative': transaction.amount < 0, 'positive': transaction.amount > 0 }">
             {{ transaction.amount }} 💰

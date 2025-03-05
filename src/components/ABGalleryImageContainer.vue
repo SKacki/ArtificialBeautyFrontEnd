@@ -12,10 +12,10 @@ const props = defineProps({
   tips: Number,
   comments: Number,
   modelId:Number,
-  type:String,
   userId:Number,
   userName:String,
-  user:Object
+  user:Object,
+  redirect:String
 });
 
 const imageStats = ref({
@@ -39,7 +39,7 @@ const redirectToUserProfile = () => {
 };
 
 const redirectToView = () => {
-  if(props.type === 'img')
+  if(props.redirect === 'img')
   {
     router.push({ name: "image", params: { imageId: props.imageId } });
   }

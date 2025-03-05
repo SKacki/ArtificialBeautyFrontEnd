@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { ref } from "vue";
 
 export const useOperationsStore = defineStore("operations", () => {
 
@@ -49,5 +50,18 @@ export const useOperationsStore = defineStore("operations", () => {
       console.error("API Error:", error);
     }
   }
-  return { sendReaction,sendTip,postComment };
+
+    const operations = ref(null);
+    const fetchOperations = async (userId) => {
+      try {
+        const response = await fetch(`https://localhost:44307/api/User/GetOperationHistory?userId=${userId}`);
+        if (!response.ok) throw new Error("Failed to fetch data");
+  
+        operations.value = await response.json();
+      } catch (error) {
+        console.error("operationStore Error:", error);
+      }
+    };
+
+  return { sendReaction,sendTip,postComment,operations,fetchOperations};
 });

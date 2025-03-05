@@ -2,16 +2,14 @@
 import ABGallery from "@/components/ABGallery.vue";
 import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/UserStore";
+import { useViewsStore } from "@/stores/ViewsStore";
 import { storeToRefs } from "pinia";
 
+const viewsStore = useViewsStore();
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
-const loadingUser = ref(true);
-const loadingImages = ref(false);
-const loadingModels = ref(false); 
-
-const images = ref([]);
-const models = ref([]);
+const { featuredImages } = storeToRefs(viewsStore);
+const { featuredModels } = storeToRefs(viewsStore);
 
 const error = ref(null);
 
@@ -20,44 +18,27 @@ onMounted(async () => {
     await userStore.fetchData(1);
   } catch (err) {
     console.error("Failed to load user data:", err);
-  } finally {
-    loadingUser.value = false;
-  }
-
-  try {
-    loadingImages.value = true;
-    const response = await fetch("https://localhost:44307/api/View/GetfeatureImages");
-    if (!response.ok) throw new Error("Failed to fetch images");
-
-    const data = await response.json();
-    images.value = data.images;
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loadingImages.value = false;
   }
   try {
-    loadingModels.value = true;
-    const response = await fetch("https://localhost:44307/api/View/GetfeatureModels");
-    if (!response.ok) throw new Error("Failed to fetch models");
-
-    const data = await response.json();
-    models.value = data.images;
+    await viewsStore.getfeaturedImages();
   } catch (err) {
     error.value = err.message;
-  } finally {
-    loadingModels.value = false;
+  }
+  try {
+    await viewsStore.getfeaturedModels();
+  } catch (err) {
+    error.value = err.message;
   }
 });
 </script>
 
 <template>
   <main>
-    <div class="gallery">
-      <ABGallery :images="images" :user="user" :header="'Featured Images'" />
+    <div v-if="featuredImages.images" class="gallery">
+      <ABGallery :images="featuredImages.images" :user="user" :header="'Featured Images'" :redirect="'img'" />
   </div>
-  <div class="gallery">
-      <ABGallery :images="models" :user="user" :header="'Featured Models'" />
+  <div v-if="featuredModels.images" class="gallery">
+      <ABGallery :images="featuredModels.images" :user="user" :header="'Featured Models'" :redirect="'model'" />
   </div>
   </main>
 </template>

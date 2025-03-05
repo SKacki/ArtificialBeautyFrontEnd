@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import ABImageStats from "./ImagesComponents/ABImageStats.vue";
+import ABImageStats from "./ABImageStats.vue";
 
 const props = defineProps({
   imageId:Number,

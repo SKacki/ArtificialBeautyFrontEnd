@@ -1,16 +1,20 @@
 <script setup>
 import { ref,onMounted } from "vue";
-import {  } from "vue";
 import { useViewsStore } from "@/stores/ViewsStore";
+import { useUserStore } from "@/stores/UserStore";
 import { storeToRefs } from "pinia";
+import ABGalleryImageContainer from "@/components/ABGalleryImageContainer.vue";
 
+const userStore = useUserStore();
 const viewsStore = useViewsStore();
-const { imgView } = storeToRefs(viewsStore);
+const { imgGallery } = storeToRefs(viewsStore);
+const { user } = storeToRefs(userStore);
 const loading = ref(true);
 
 onMounted(async () => {
   try {
     await viewsStore.fetchImages();
+    await userStore.fetchData(1);
   } catch (err) {
     console.error("Failed to load data:", err);
   } finally {
@@ -18,87 +22,48 @@ onMounted(async () => {
   }
 });
 
-const imgs = ref([
-  { src: "https://source.unsplash.com/random/200x200", alt: "Random Image 1" },
-  { src: "https://source.unsplash.com/random/201x200", alt: "Random Image 2" },
-  { src: "https://source.unsplash.com/random/202x200", alt: "Random Image 3" },
-  { src: "https://source.unsplash.com/random/203x200", alt: "Random Image 4" },
-]);
-
-const selectedImage = ref(null);
-
-const openImage = (image) => {
-  selectedImage.value = image;
-};
 </script>
 
-
 <template>
-  <p>hey {{imgView}}</p>
-  <div class="gallery">
+  <div v-if="!loading" class="gallery">
     <div class="grid-container">
-      <div
-        v-for="(image, index) in imgs"
+      <ABGalleryImageContainer
+        v-for="(image, index) in imgGallery.images"
         :key="index"
-        class="image-wrapper"
-        @click="openImage(image)"
-      >
-        <img :src="image.src" :alt="image.alt" class="image" />
-      </div>
-    </div>
-
-    <div v-if="selectedImage" class="overlay" @click="selectedImage = null">
-      <img :src="selectedImage.src" :alt="selectedImage.alt" class="overlay-image" />
+        :imageId="image.id"
+        :imageRef="image.ref"
+        :description="image.description"
+        :likes="image.likes"
+        :dislikes="image.dislikes"
+        :tips="image.tips"
+        :comments="image.comments"
+        :userId="image.userId"
+        :userName="image.userName"
+        :user="user"
+        :redirect="'img'"
+      />
     </div>
   </div>
 </template>
-
 <style scoped>
 .gallery {
   padding: 20px;
 }
-
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px; 
+  max-width: 100%;
 }
 
-.image-wrapper {
-  cursor: pointer;
-  overflow: hidden;
-  border-radius: 8px;
-  transition: transform 0.2s ease-in-out;
+@media (min-width: 1000px) {
+  .grid-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
-.image-wrapper:hover {
-  transform: scale(1.05);
-}
-
-.image {
+.image-container {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Overlay styles */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.overlay-image {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 10px;
+  overflow: hidden;
 }
 </style>

@@ -6,11 +6,11 @@ const props = defineProps({
   images: Array,
   user:Object,
   header:String,
+  redirect:String
 });
 
 const currentPage = ref(0);
 const imagesPerPage = 5;
-const type = computed(() => props.header ==="Featured Images" || props.header ==="Gallery" ? 'img' : 'model'); //this is retarded but i don't have time to do it better
 
 const displayedImages = computed(() => {
   const start = currentPage.value * imagesPerPage;
@@ -49,10 +49,10 @@ const prevPage = () => {
         :imageId="image.id"
         :comments="image.commentsCount"
         :modelId="image.exampleOfModel"
-        :type ="type"
         :userId="image.userId"
         :userName="image.userName"
         :user="props.user"
+        :redirect="props.redirect"
       />
     </div>
 
