@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import ABheader from './components/ABheader.vue';
+import ABheader from './components/CommonComponents/ABheader.vue';
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";

@@ -1,5 +1,5 @@
 <script setup>
-import ABGallery from "@/components/ABGallery.vue";
+import ABGallery from "@/components/CommonComponents/ABGallery.vue";
 import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/UserStore";
 import { useViewsStore } from "@/stores/ViewsStore";
