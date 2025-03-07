@@ -3,7 +3,8 @@ import { computed, onMounted, ref} from "vue";
 import defaultProfilePic from "@/assets/default-profile.png";
 import { useToast } from 'vue-toastification';
 import { useRoute } from "vue-router";
-import ABGallery from "@/components/ABGallery.vue";
+import ABGallery from "@/components/CommonComponents/ABGallery.vue";
+import ABLoadingSpinner from "@/components/CommonComponents/ABLoadingSpinner.vue";
 import { useUserStore } from "@/stores/UserStore";
 import { storeToRefs } from "pinia";
 
@@ -35,7 +36,7 @@ onMounted(async () => {
 
 
 <template>
-  <div v-if="loadingUser">Loading ...</div>
+  <div v-if="loadingUser"><ABLoadingSpinner/></div>
     <div v-else class="profile-container">
       <div class="profile-pic">
         <img :src="userView.profilePic || defaultProfilePic" alt="Profile Picture" />

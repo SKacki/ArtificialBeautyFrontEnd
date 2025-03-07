@@ -14,11 +14,11 @@ const { featuredModels } = storeToRefs(viewsStore);
 const error = ref(null);
 
 onMounted(async () => {
-  try {
-    await userStore.fetchData(1);
-  } catch (err) {
-    console.error("Failed to load user data:", err);
-  }
+   try {
+     await userStore.fetchData(1);
+   } catch (err) {
+     console.error("Failed to load user data:", err);
+   }
   try {
     await viewsStore.getfeaturedImages();
   } catch (err) {

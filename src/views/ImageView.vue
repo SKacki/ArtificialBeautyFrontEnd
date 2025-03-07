@@ -66,6 +66,7 @@ onMounted(async () => {
    } finally {
      loading.value = false;
    }
+   await userStore.fetchData(1);
  });
 
 const assignValues = (data) => {

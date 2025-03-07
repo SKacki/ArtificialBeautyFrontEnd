@@ -26,5 +26,16 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  return { user,userView, fetchData,fetchView };
+  const fetchUserByEmail = async (email) => {
+    try {
+      const response = await fetch(`https://localhost:44307/api/User/GetUserByEmail?email=${email}`);
+      if (!response.ok) throw new Error("Failed to fetch user data");
+
+      user.value = await response.json();
+    } catch (error) {
+      console.error("UserStore Error:", error);
+    }
+  };
+
+  return { user,userView, fetchData,fetchView,fetchUserByEmail };
 });

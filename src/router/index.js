@@ -32,7 +32,17 @@ const router = createRouter({
       path: '/images',
       name: 'images',
       component: () => import('../views/ImagesGalleryView.vue'),
-    },   
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegistrationView.vue'),
+    },       
   ],
 })
 

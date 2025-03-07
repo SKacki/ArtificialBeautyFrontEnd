@@ -3,7 +3,7 @@ import { ref,onMounted } from "vue";
 import { useViewsStore } from "@/stores/ViewsStore";
 import { useUserStore } from "@/stores/UserStore";
 import { storeToRefs } from "pinia";
-import ABGalleryImageContainer from "@/components/ABGalleryImageContainer.vue";
+import ABGalleryImageContainer from "@/components/CommonComponents/ABGalleryImageContainer.vue";
 
 const userStore = useUserStore();
 const viewsStore = useViewsStore();
