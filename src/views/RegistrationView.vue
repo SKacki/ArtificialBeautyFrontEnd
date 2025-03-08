@@ -2,7 +2,6 @@
 import { ref,} from "vue";
 import { useToast } from "vue-toastification";
 import { useAuthStore } from "@/stores/AuthStore";
-import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -11,23 +10,14 @@ const authStore = useAuthStore();
 const username = ref("");
 const email = ref("");
 const password = ref("");
-const { user } = storeToRefs(useAuthStore);
 
 const handleRegister = async () => {
   const result = await authStore.register({ username: username.value, email: email.value, password: password.value });
     if (result.status===200)
     {
-      const userDTO = ref({
-        userName: username.value,
-        email: email.value,
-        joinedDate:null
-      })
-
       await authStore.postUser({userName: username.value,email: email.value,joinedDate:null});
-
       toast.success("Registration was successful");
-    
-      router.push({ name: "home" });
+      router.push({ name: "login" });
     }
     else
     {

@@ -73,5 +73,10 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-  return { user, register, login, fetchUser, postUser };
+  const logout = async() => {
+    localStorage.removeItem("userId");
+    //localStorage.removeItem("token");
+  };
+
+  return { user, register, login, fetchUser, postUser,logout };
 });

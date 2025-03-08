@@ -32,6 +32,7 @@ export const useUserStore = defineStore("user", () => {
       if (!response.ok) throw new Error("Failed to fetch user data");
 
       user.value = await response.json();
+      return user;
     } catch (error) {
       console.error("UserStore Error:", error);
     }

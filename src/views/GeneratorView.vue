@@ -24,6 +24,7 @@ const meta = ref({
   genDate: null
 });
 
+//przerzuć do store
 const fetchMetadata = async () => {
   const imageId = route.params.imageId;
   if (!imageId) return;

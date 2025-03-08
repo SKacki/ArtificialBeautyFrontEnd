@@ -3,23 +3,24 @@ import { ref } from "vue";
 import { useToast } from "vue-toastification";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useUserStore } from "@/stores/UserStore";
-import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+
 
 const router = useRouter();
 const toast = useToast();
 const authStore = useAuthStore();
-const userStore = useUserStore()
+const userStore = useUserStore();
 const email = ref("");
 const password = ref("");
 const error = authStore.error;
-const { user } = storeToRefs(userStore);
 
 const handleLogin = async () => {
   const result = await authStore.login({ email: email.value, password: password.value });
   if (result.status===200)
     {
-      await userStore.fetchUserByEmail(email.value);
+      const usr = await userStore.fetchUserByEmail(email.value);
+      localStorage.setItem("userId", usr.value.id);
+      //localStorage.setItem("token", response.token);
       toast.success("Welcome user :)");
       router.push({ name: "home" });
     }

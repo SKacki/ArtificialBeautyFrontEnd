@@ -4,26 +4,42 @@ import ABheader from './components/CommonComponents/ABheader.vue';
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 const loadingUser = ref(true);
 
+const testStuff = () => {
+  console.log(localStorage.getItem("userId"));
+};
+
+const isAuthenticated = computed(() => !!localStorage.getItem("userId"));
 
 onMounted(async () => {
+  if(!isAuthenticated.value)
+  {
+    router.push("/login")
+  } else {
   try {
-    await userStore.fetchData(1);
+    await userStore.fetchData(localStorage.getItem("userId"));
   } catch (err) {
     console.error("Failed to load user data:", err);
   } finally {
     loadingUser.value = false;
   }
+}
 });
 </script>
 
 <template>
-  <div v-if="loadingUser">Loading ...</div>
-  <ABheader v-else :user="user" />
+  <ABheader v-if="user" :user="user" />
+  <button class="test-button" @click="testStuff">
+      <span class="icon">Test 🧪</span>
+      <span>{{ commentsCount }}</span>
+    </button>
   <RouterView />
 </template>
 

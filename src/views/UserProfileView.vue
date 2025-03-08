@@ -6,16 +6,21 @@ import { useRoute } from "vue-router";
 import ABGallery from "@/components/CommonComponents/ABGallery.vue";
 import ABLoadingSpinner from "@/components/CommonComponents/ABLoadingSpinner.vue";
 import { useUserStore } from "@/stores/UserStore";
+import { useAuthStore } from "@/stores/AuthStore";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 const loadingUser = ref(true);
 const toast = useToast();
 const userStore = useUserStore();
+const authStore = useAuthStore();
 const { userView } = storeToRefs(userStore);
 
 const myProfile = computed(() => {
-  route.params.imageId === 1 ? true : false}); //fix this!!!!!
+  return String(route.params.userId) === String(userStore.user?.id);
+});
 
 const formatDate = (dateString) => {
   if (!dateString) return "Invalid Date";
@@ -29,35 +34,46 @@ onMounted(async () => {
     console.error("Failed to load user data on mount:", err);
   } finally {
     loadingUser.value = false;
+    console.log(myProfile);
   }
 });
+
+const handleLogout = () => {
+  authStore.logout();
+  userStore.user = null;
+  router.push("/login");
+  toast.info("We miss you already") 
+};
 
 </script>
 
 
 <template>
-  <div v-if="loadingUser"><ABLoadingSpinner/></div>
-    <div v-else class="profile-container">
-      <div class="profile-pic">
-        <img :src="userView.profilePic || defaultProfilePic" alt="Profile Picture" />
-      </div>
-      <div class="profile-details">
-        <h2>{{ userView.user.userName }}</h2>
-        <p class="bio">{{ userView.user.bio }}</p>
-        <p><strong>Joined:</strong> {{ formatDate(userView.user.joinedDate) }}</p>
-  
-        <div class="stats">
-          <p><strong>Followers:</strong> {{ userView.user.followersCount }}</p>
-          <p><strong>Following:</strong> {{ userView.user.followingCount }}</p>
-          <p><strong>Images:</strong> {{ userView.user.imagesCount }}</p>
-        </div>
-        <button v-if="myProfile" class="follow-btn">Follow</button>
-      </div>
+  <div v-if="loadingUser"><ABLoadingSpinner /></div>
+  <div v-else class="profile-container">
+    <div class="profile-pic">
+      <img :src="userView.profilePic || defaultProfilePic" alt="Profile Picture" />
     </div>
-    <div v-if="userView?.images" class="gallery">
-          <ABGallery :images="userView.images" :header="'Gallery'" />
-        </div>
-  </template>
+    <div class="profile-details">
+      <h2>{{ userView.user.userName }}</h2>
+      <p class="bio">{{ userView.user.bio }}</p>
+      <p><strong>Joined:</strong> {{ formatDate(userView.user.joinedDate) }}</p>
+
+      <div class="stats">
+        <p><strong>Followers:</strong> {{ userView.user.followersCount }}</p>
+        <p><strong>Following:</strong> {{ userView.user.followingCount }}</p>
+        <p><strong>Images:</strong> {{ userView.user.imagesCount }}</p>
+      </div>
+
+      <button v-if="!myProfile" class="follow-btn">Follow</button>
+      <button v-if="myProfile" @click="handleLogout" class="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <div v-if="userView?.images" class="gallery">
+    <ABGallery :images="userView.images" :header="'Gallery'" />
+  </div>
+</template>
   
   <style scoped>
     .profile-container {
@@ -113,5 +129,19 @@ onMounted(async () => {
     .follow-btn:hover {
       background: #e68900;
     }
+    .logout-btn {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+  .logout-btn:hover {
+    background-color: #c9302c;
+  }
   </style>
   
