@@ -1,8 +1,9 @@
 <script setup>
-import { reactive,ref, computed, onMounted, watch } from "vue";
+import { reactive, ref, computed, onMounted, watch, defineEmits } from "vue";
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
+const emit = defineEmits(["imageGenerated"]);
 
 const props = defineProps({
   metadata: Object,
@@ -26,20 +27,60 @@ const fetchItems = async () => {
   }
 };
 
-const sendGenerationRequest = async () => {
+const generate = async (metadata) => {
   try {
+    const imageUrl = await sendGenerationRequest(metadata);
+    emit("imageGenerated", imageUrl);
+  } catch (error) {
+    console.error("Error generating image:", error);
+  }
+};
+
+
+const sendGenerationRequest = async (metadata) => {
+  try {
+    const data = {
+      userId: Number(localStorage.getItem("userId")),
+      modelId: metadata.modelId,
+      lora1Id: metadata.lora1Id || null,
+      lora2Id: metadata.lora2Id || null,
+      sampler: metadata.sampler,
+      scheduler: metadata.scheduler,
+      guidance: metadata.guidance,
+      steps: metadata.steps,
+      seed: metadata.seed || null,
+      promptPoz: metadata.promptPoz,
+      promptNeg: metadata.promptNeg,
+      height: metadata.height,
+      width: metadata.width,
+      description: "Untitled",
+    };
+
     const response = await fetch("https://localhost:44307/api/Generator/GenerateImage", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(localMetadata),
+      body: JSON.stringify(data),
     });
 
-    if (!response.ok) throw new Error("Failed to send data");
-    console.log("Metadata sent successfully!");
+    if (!response.ok) {
+      const errorText = await response.text();
+      toast.error(error);
+      throw new Error(`Error ${response.status}: ${errorText}`);
+    }
+
+    const blob = await response.blob();
+    const imageUrl = URL.createObjectURL(blob);
+
+    return imageUrl;
+
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("Failed to generate image:", error);
+    toast.error(error);
+    throw error;
   }
-  finally{toast.success('Your image is generating')}
+  finally{
+    toast.success("We're working on your image 🔧")
+  }
 };
 
 const handleSeed = () => {
@@ -166,7 +207,7 @@ const loraModels = computed(() => items.value.filter(item => item.type !== "Chec
         </td>
       </tr>
     </table>
-    <div><button class="create-button" @click="sendGenerationRequest">Make art</button></div>
+    <div><button class="create-button" @click="generate(localMetadata)">Make art</button></div>
   </div>
 </template>
 

@@ -34,7 +34,6 @@ onMounted(async () => {
     console.error("Failed to load user data on mount:", err);
   } finally {
     loadingUser.value = false;
-    console.log(myProfile);
   }
 });
 

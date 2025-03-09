@@ -36,10 +36,10 @@ onMounted(async () => {
 
 <template>
   <ABheader v-if="user" :user="user" />
-  <button class="test-button" @click="testStuff">
+  <!--<button class="test-button" @click="testStuff">
       <span class="icon">Test 🧪</span>
       <span>{{ commentsCount }}</span>
-    </button>
+    </button>-->
   <RouterView />
 </template>
 

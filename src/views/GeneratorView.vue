@@ -9,6 +9,10 @@ const imageSrc = computed(() => {
   return route.params.imageId > 0 ? `https://localhost:44307/api/Image/GetImageById?imageId=${route.params.imageId}` : placeholder;
 });
 const loading= ref(false);
+const generatedImage = ref(null);
+const setImage = (imageUrl) => {
+  generatedImage.value = imageUrl;
+};
 
 const meta = ref({
   modelId: 1,
@@ -58,10 +62,11 @@ onMounted(fetchMetadata);
 <template>
   <div class="container">
     <div class="image-section">
-        <img :src="imageSrc" :alt="placeholder" class="image"/>
+        <img v-if="!generatedImage" :src="imageSrc" :alt="placeholder" class="image"/>
+        <img v-else :src="generatedImage" :alt="placeholder" class="image"/>
     </div>
     <div class="info-section">
-      <ABGenerationParamsTable :metadata="meta" />
+      <ABGenerationParamsTable :metadata="meta" @image-generated="setImage" />
     </div>
   </div>
 </template>

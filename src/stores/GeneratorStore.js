@@ -5,6 +5,7 @@ export const useGeneratorStore = defineStore("generator", () => {
 
   const generate = async (metadata) => {  
     try {
+      console.log("hey"); console.log(JSON.stringify(metadata.value));
       const response = await fetch(`https://localhost:44307/api/Generator/GenerateImage`, 
         {      
           method: "POST",
@@ -26,7 +27,6 @@ export const useGeneratorStore = defineStore("generator", () => {
       if (!response.ok) throw new Error("Failed to fetch metadata");
   
       imageInfo.value = await response.json();
-      //meta.value = { ...meta.value, ...data.metadata };
     } catch (error) {
       console.error("API Error:", error);
     }
@@ -35,11 +35,9 @@ export const useGeneratorStore = defineStore("generator", () => {
 const metadata = ref(null);
 const fetchMetadata = async (imageId) => {
     try {
-       loading.value = true;
        const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imageId}`);
        if (!response.ok) throw new Error("Failed to fetch data");
-       const data = await response.json();
-       metadata.value = data;
+       metadata.value = await response.json();
      } catch (error) {
         console.error("API Error:", error);
      }
