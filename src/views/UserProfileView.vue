@@ -29,7 +29,7 @@ const formatDate = (dateString) => {
 
 onMounted(async () => {
   try {
-    await userStore.fetchView(1);
+    await userStore.fetchView(Number(route.params.userId));
   } catch (err) {
     console.error("Failed to load user data on mount:", err);
   } finally {
@@ -70,7 +70,8 @@ const handleLogout = () => {
   </div>
 
   <div v-if="userView?.images" class="gallery">
-    <ABGallery :images="userView.images" :header="'Gallery'" />
+    <ABGallery :images="userView.images" :user="userView.user" :header="'Gallery'" :redirect="'img'" />
+    <ABGallery :images="userView.unpublishedImages" :user="userView.user" :header="'Unpublished'" :redirect="'img'" />
   </div>
 </template>
   

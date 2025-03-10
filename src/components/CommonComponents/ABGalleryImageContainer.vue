@@ -2,6 +2,7 @@
 import { defineProps, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import ABImageStats from "../ImagesComponents/ABImageStats.vue";
+import ABDescription from "../CommonComponents/ABDescription.vue";
 
 const props = defineProps({
   imageId:Number,
@@ -25,18 +26,8 @@ const imageStats = ref({
   comments:props.comments,
 });
 
-const user = ref(
-  {
-    userId: props.userId,
-    userName: props.userName
-  });
-
 const imageSrc = computed(() => `https://localhost:44307/api/Image/GetImage?imageId=${props.imageRef}`);
 const router = useRouter();
-
-const redirectToUserProfile = () => {
-  router.push(`/user/${props.userId}`);
-};
 
 const redirectToView = () => {
   if(props.redirect === 'img')
@@ -45,7 +36,7 @@ const redirectToView = () => {
   }
   else
   {
-    router.push({ name: "model", params: { imageId: props.modelId } });
+    router.push({ name: "model", params: { modelId: props.modelId } });
   }
 };
 </script>
@@ -53,10 +44,7 @@ const redirectToView = () => {
 <template>
   <div class="image-container">
     <img :src="imageSrc" alt="Image" class="image" @click="redirectToView" />
-    <p class="description">
-      {{ description }} by 
-      <span class="username" @click="redirectToUserProfile">{{ props.userName }}</span>
-    </p>
+    <ABDescription :userId="props.userId" :userName="props.userName" :description="props.description" />
     <div class="stats-container">
       <ABImageStats :stats="imageStats" :imageId="imageId" :user="props.user" />
     </div>
@@ -102,29 +90,6 @@ const redirectToView = () => {
   transform: scale(1.05);
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
 }
-
-.description {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #ccc;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-}
-
-.description::after {
-  content: "";
-  display: block;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(to right, #ffcc00, #ff66ff);
-  transition: width 0.3s;
-}
-
-.description:hover::after {
-  width: 100%;
-}
-
 .username {
   font-weight: bold;
   color: #ffcc00;

@@ -1,67 +1,44 @@
 <script setup>
-import { ref, onMounted,computed } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import ABGenerationParamsTable from "@/components/GeneratorComponents/ABGenerationParamsTable.vue";
-import placeholder from '@/assets/placeholder.png';
+import ABmodelInfoTable from "@/components/ModelComponents/ABmodelInfoTable.vue";
+import ABGallery from "@/components/CommonComponents/ABGallery.vue";
+import { useViewsStore } from "@/stores/ViewsStore";
+import { useUserStore } from "@/stores/UserStore";
+import { storeToRefs } from "pinia";
+import ABModelGallery from "@/components/GalleryComponents/ABModelGallery.vue";
 
+const store = useViewsStore();
+const userStore = useUserStore();
+const { modelView } = storeToRefs(store);
+const { user } = storeToRefs(userStore);
 const route = useRoute();
-const imageSrc = computed(() => {
-  return route.params.imageId > 0 ? `https://localhost:44307/api/Image/GetImageById?imageId=${route.params.imageId}` : placeholder;
-});
-const loading= ref(false);
 
-const meta = ref({
-  modelId: 1,
-  lora1Id: null,
-  lora2Id: null,
-  sampler: "",
-  scheduler: "",
-  guidance: 1,
-  steps: 10,
-  seed: 0,
-  promptPoz: "",
-  promptNeg: "",
-  genDate: null
-});
-
-const fetchMetadata = async () => {
-  const imageId = route.params.imageId;
-  if (!imageId) return;
-
+onMounted(async () => {
   try {
-    const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imageId}`);
-    if (!response.ok) throw new Error("Failed to fetch metadata");
-
-    const data = await response.json();
-    meta.value = { ...meta.value, ...data.metadata };
-  } catch (error) {
-    console.error("API Error:", error);
+    await store.getModelView(Number(route.params.modelId));
+  } catch (err) {
+    console.error("Failed to load model view on mount:", err);
   }
-
   try {
-     loading.value = true;
-     const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imageId}`);
-     if (!response.ok) throw new Error("Failed to fetch data");
-     const data = await response.json();
-     meta.value = data;
-   } catch (err) {
-     error.value = err.message;
-   } finally {
-     loading.value = false;
-   }
-};
+    await userStore.fetchData(localStorage.getItem("userId"));
+  } catch (err) {
+    console.error("Failed to load model view on mount:", err);
+  }
+});
 
-onMounted(fetchMetadata);
 </script>
+
 
 <template>
   <div class="container">
-    <div class="image-section">
-        <img :src="imageSrc" :alt="placeholder" class="image"/>
-    </div>
+    <ABModelGallery :images="modelView.examples" :user="user"/>
     <div class="info-section">
-      <ABGenerationParamsTable :metadata="meta" />
+      <ABmodelInfoTable :metadata="modelView.model" />
     </div>
+  </div>
+  <div v-if="modelView.images" class="gallery">
+    <ABGallery :images="modelView.images" :user=user :header="'Gallery'" :redirect="'img'" />
   </div>
 </template>
 
@@ -83,4 +60,13 @@ onMounted(fetchMetadata);
   border-radius: 8px;
   object-fit: cover;
 }
+.image-buttons {
+    margin-top: 10px;
+    margin-right:5px;
+    padding: 8px 12px;
+    background: #ffcc00;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 </style>

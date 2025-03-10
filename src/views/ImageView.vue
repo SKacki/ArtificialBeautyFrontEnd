@@ -14,7 +14,7 @@ const { user } = storeToRefs(userStore);
 
 const imgId = ref(null);
 const image = ref(null);
-const loading = ref(false);
+const loading = ref(true);
 const error = ref(null);
 const router = useRouter();
 const route = useRoute();
@@ -31,7 +31,6 @@ const imageSrc = computed(() => {
 onMounted(async () => {
    try {
      imgId.value = route.params.imageId;
-     loading.value = true;
      const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imgId.value}`);
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
@@ -39,34 +38,27 @@ onMounted(async () => {
      assignValues(data);
    } catch (err) {
      error.value = err.message;
-   } finally {
-     loading.value = false;
    }
    try {
      imgId.value = route.params.imageId;
-     loading.value = true;
      const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imgId.value}`);
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
      meta.value = data;
    } catch (err) {
      error.value = err.message;
-   } finally {
-     loading.value = false;
-   }
+   } 
    try {
      imgId.value = route.params.imageId;
-     loading.value = true;
      const response = await fetch(`https://localhost:44307/api/Image/GetImageComments?imageId=${imgId.value}`);
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
      imgComments.value = data;
    } catch (err) {
      error.value = err.message;
-   } finally {
-     loading.value = false;
    }
-   await userStore.fetchData(1);
+   await userStore.fetchData(localStorage.getItem("userId"));
+   loading.value = false;
  });
 
 const assignValues = (data) => {
@@ -92,16 +84,16 @@ const publish = () => {
 
 
 <template>
-  <div class="container">
+  <div v-if="!loading" class="container">
     <div class="image-section">
       <img :src=imageSrc alt="Generated Image" class="image" />
       <ABImageStats :stats="imgStats" :user="user" :imageId="imgId" />
     </div>
-    <div class="info-section">
+    <div v-if="!loading" class="info-section">
       <ABMetadataTable :metadata="meta" />
       <ABComment :imgComments="imgComments" :user="user"/>
       <button class="image-buttons" @click="remix">Remix image</button>
-      <button class="image-buttons" @click="publish">Publish image</button>
+      <button v-if="user.id == image.userId" class="image-buttons" @click="publish">Publish image</button>
     </div>
   </div>
 </template>

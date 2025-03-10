@@ -14,7 +14,7 @@ const loading = ref(true);
 onMounted(async () => {
   try {
     await viewsStore.fetchImages();
-    await userStore.fetchData(1);
+    await userStore.fetchData(localStorage.getItem("userId"));
   } catch (err) {
     console.error("Failed to load data:", err);
   } finally {

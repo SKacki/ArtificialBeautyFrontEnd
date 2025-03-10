@@ -33,6 +33,8 @@ const fetchMetadata = async () => {
   const imageId = route.params.imageId;
   if (!imageId) return;
 
+  if(Number(imageId) !==0)
+  {
   try {
     const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imageId}`);
     if (!response.ok) throw new Error("Failed to fetch metadata");
@@ -50,10 +52,12 @@ const fetchMetadata = async () => {
      const data = await response.json();
      meta.value = data;
    } catch (err) {
-     error.value = err.message;
+     err.value = err.message;
    } finally {
      loading.value = false;
    }
+  }
+  loading.value = false;
 };
 
 onMounted(fetchMetadata);

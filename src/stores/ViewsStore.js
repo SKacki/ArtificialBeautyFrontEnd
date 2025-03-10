@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 export const useViewsStore = defineStore("view", () => {
   const imgGallery = ref([]);
-  const fetchImages = async (searchTerm) => {
+  const fetchImages = async () => {
     try {
       const response = await fetch(`https://localhost:44307/api/View/GetImageView`);
       if (!response.ok) throw new Error("Failed to fetch data");
@@ -50,5 +50,20 @@ export const useViewsStore = defineStore("view", () => {
     }
   };
 
-  return { imgGallery,imgGalleryFiltered,featuredImages,featuredModels, fetchImages,searchImages,getfeaturedImages,getfeaturedModels };
+  const modelView = ref([]);
+  const getModelView = async (modelId) => {
+    try {
+      const response = await fetch(`https://localhost:44307/api/View/GetModelView?modelId=${modelId}`);
+      if (!response.ok) throw new Error("Failed to fetch data");
+
+      modelView.value = await response.json();
+    } catch (error) {
+      console.error("viewsStore Error:", error);
+    }
+  };
+
+  return { 
+    imgGallery,imgGalleryFiltered,featuredImages,featuredModels,modelView,
+    getModelView, fetchImages,searchImages,getfeaturedImages,getfeaturedModels 
+  };
 });

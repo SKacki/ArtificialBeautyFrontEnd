@@ -36,7 +36,6 @@ export const useOperationsStore = defineStore("operations", () => {
   }
   const postComment = async (comment) => {  
     try {
-      console.log(comment);
       const response = await fetch(`https://localhost:44307/api/Image/PostComment`, 
         {      
           method: "POST",
