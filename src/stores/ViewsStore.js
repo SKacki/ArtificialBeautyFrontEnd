@@ -62,8 +62,20 @@ export const useViewsStore = defineStore("view", () => {
     }
   };
 
+  const modelGalleryView = ref([]);
+  const getmodelGalleryView = async () => {
+    try {
+      const response = await fetch(`https://localhost:44307/api/View/GetAllModels`);
+      if (!response.ok) throw new Error("Failed to fetch data");
+
+      modelGalleryView.value = await response.json();
+    } catch (error) {
+      console.error("viewsStore Error:", error);
+    }
+  };
+
   return { 
-    imgGallery,imgGalleryFiltered,featuredImages,featuredModels,modelView,
-    getModelView, fetchImages,searchImages,getfeaturedImages,getfeaturedModels 
+    imgGallery,imgGalleryFiltered,featuredImages,featuredModels,modelView,modelGalleryView,
+    getModelView, fetchImages,searchImages,getfeaturedImages,getfeaturedModels,getmodelGalleryView 
   };
 });

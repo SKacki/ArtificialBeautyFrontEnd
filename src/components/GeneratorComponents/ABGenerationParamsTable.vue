@@ -44,6 +44,7 @@ const claim = async() => {
 
 const generate = async (metadata) => {
   try {
+    console.log(metadata);
     const imageUrl = await sendGenerationRequest(metadata);
     console.log(imageUrl);
     emit("imageGenerated", imageUrl);
@@ -225,7 +226,7 @@ const loraModels = computed(() => items.value.filter(item => item.type !== "Chec
     </table>
   </div>
   <div class="button-container">
-        <button class="generator-button generate-button" @click="generate">Make art 🤖🖌️</button>
+        <button class="generator-button generate-button" @click="generate(localMetadata)">Make art 🤖🖌️</button>
         <button class="generator-button claim-button" @click="claim">Claim 💰💰</button>
     </div>
 </template>

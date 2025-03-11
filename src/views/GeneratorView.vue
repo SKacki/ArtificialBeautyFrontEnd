@@ -3,6 +3,7 @@ import { ref, onMounted,computed } from "vue";
 import { useRoute } from "vue-router";
 import ABGenerationParamsTable from "@/components/GeneratorComponents/ABGenerationParamsTable.vue";
 import placeholder from '@/assets/placeholder.png';
+import ABLoadingSpinner from "@/components/CommonComponents/ABLoadingSpinner.vue";
 
 const route = useRoute();
 const imageSrc = computed(() => {

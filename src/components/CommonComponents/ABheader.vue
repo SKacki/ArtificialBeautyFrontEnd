@@ -29,13 +29,13 @@ const redirectToView = (view) => {
           <RouterLink to="/generator/0" class="nav-item">
             <span class="icon">🎨</span> <span>Create</span>
           </RouterLink>
-          <RouterLink to="/" class="nav-item">
+          <RouterLink to="/models" class="nav-item">
             <span class="icon">🤖</span> <span>Models</span>
           </RouterLink>
           <RouterLink to="/images" class="nav-item">
             <span class="icon">🖼️</span> <span>Images</span>
           </RouterLink>
-          <RouterLink to="/transactions/1" class="nav-item">
+          <RouterLink :to="`/transactions/${props.user.id}`" class="nav-item">
             <span class="icon">💰</span> <span>{{ props.user.currency ?? 0 }}</span>
           </RouterLink>
         </ul>

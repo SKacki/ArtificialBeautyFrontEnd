@@ -29,9 +29,14 @@ const router = createRouter({
       component: () => import('../views/TransactionsView.vue'),
     },
     {
-      path: '/images',
+      path: '/images/:query?',
       name: 'images',
       component: () => import('../views/ImagesGalleryView.vue'),
+    },
+    {
+      path: '/models/:query?',
+      name: 'models',
+      component: () => import('../views/ModelGalleryView.vue'),
     },
     {
       path: '/login',
