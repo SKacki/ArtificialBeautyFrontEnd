@@ -1,7 +1,9 @@
 <script setup>
 import { reactive, ref, computed, onMounted, watch, defineEmits } from "vue";
 import { useToast } from 'vue-toastification';
+import { useOperationsStore } from "@/stores/OperationsStore";
 
+const store = useOperationsStore();
 const toast = useToast();
 const emit = defineEmits(["imageGenerated"]);
 
@@ -27,6 +29,19 @@ const fetchItems = async () => {
   }
 };
 
+const claim = async() => {
+  const result = await store.claimDailyReward(Number(localStorage.getItem("userId")));
+
+  if(result.status === 200) {
+    toast.success("Claimed 20 💰");
+  } else if(result.status === 291){
+    toast.info("Already claimed today");
+  } else{
+    console.log(result);
+    toast.error(result.data.message);
+  }
+};
+
 const generate = async (metadata) => {
   try {
     const imageUrl = await sendGenerationRequest(metadata);
@@ -37,7 +52,6 @@ const generate = async (metadata) => {
     console.error("Error generating image:", error);
   }
 };
-
 
 const sendGenerationRequest = async (metadata) => {
   try {
@@ -212,7 +226,7 @@ const loraModels = computed(() => items.value.filter(item => item.type !== "Chec
   </div>
   <div class="button-container">
         <button class="generator-button generate-button" @click="generate">Make art 🤖🖌️</button>
-        <button class="generator-button claim-button" @click="publish">Claim 💰💰</button>
+        <button class="generator-button claim-button" @click="claim">Claim 💰💰</button>
     </div>
 </template>
 

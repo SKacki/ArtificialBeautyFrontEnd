@@ -49,6 +49,20 @@ export const useOperationsStore = defineStore("operations", () => {
       console.error("API Error:", error);
     }
   }
+  const claimDailyReward = async (userId) => {  
+    try {
+      const response = await fetch(`https://localhost:44307/api/User/ClaimDailyReward?userId=${userId}`, 
+        {      
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      const data = await response.json();
+      return {status:response.status,data};
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  }
 
     const operations = ref(null);
     const fetchOperations = async (userId) => {
@@ -62,5 +76,5 @@ export const useOperationsStore = defineStore("operations", () => {
       }
     };
 
-  return { sendReaction,sendTip,postComment,operations,fetchOperations};
+  return { sendReaction,sendTip,postComment,operations,fetchOperations,claimDailyReward};
 });
