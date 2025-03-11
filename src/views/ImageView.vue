@@ -6,11 +6,12 @@ import ABComment from "@/components/CommentsComponents/ABComment.vue";
 import ABImageStats from "@/components/ImagesComponents/ABImageStats.vue";
 import { useToast } from 'vue-toastification';
 import { useUserStore } from "@/stores/UserStore";
+import { useImageStore } from "@/stores/ImageStore";
 import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();
+const imageStore = useImageStore();
 const { user } = storeToRefs(userStore);
-
 
 const imgId = ref(null);
 const image = ref(null);
@@ -76,8 +77,37 @@ const remix = () => {
   router.push({ name: "generator", params: { imageId: imgId.value }});
 };
 
-const publish = () => {
-  toast.info("Clicky!")
+const publish = async () => {
+  console.log(image);
+  const result = await imageStore.publishImage(image.value);
+  if(result.value.status === 200)
+  {
+    toast.success("Your image is public now 🎉");
+    toast.success("Award for first post of the day: 20 💰");
+    router.push({ name: "home" });
+  }
+  else if(result.value.status === 291)
+  {
+    toast.success("Your image is public now 🎉");
+    router.push({ name: "home" });
+  }
+  else
+  {
+    toast.error("Ups, something went wrong")
+  }
+};
+
+const discard = async() => {
+  const result = await imageStore.deleteImage(imageRef.value);
+  if(result.value.status === 200)
+  {
+    toast.success("Image deleted 🗑️");
+    router.push({ name: "home" });
+  }
+  else
+  {
+    toast.error("Ups, something went wrong")
+  }
 };
 
 </script>
@@ -92,8 +122,11 @@ const publish = () => {
     <div v-if="!loading" class="info-section">
       <ABMetadataTable :metadata="meta" />
       <ABComment :imgComments="imgComments" :user="user"/>
-      <button class="image-buttons" @click="remix">Remix image</button>
-      <button v-if="user.id == image.userId" class="image-buttons" @click="publish">Publish image</button>
+      <div class="button-container">
+        <button class="image-button remix-button" @click="remix">Remix image 🛠️</button>
+        <button v-if="user.id == image.userId && image.uploadDate == null" class="image-button publish-button" @click="publish">Publish image 🖼️</button>
+        <button v-if="user.id == image.userId" class="image-button discard-button" @click="discard">Discard image 🗑️</button>
+      </div>
     </div>
   </div>
 </template>
@@ -116,13 +149,40 @@ const publish = () => {
   border-radius: 8px;
   object-fit: cover;
 }
-.image-buttons {
-    margin-top: 10px;
-    margin-right:5px;
-    padding: 8px 12px;
-    background: #ffcc00;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+
+.image-button {
+  background-color: #ffcc00;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.image-button:hover {
+  background-color: #ffaa00;
+  transform: scale(1.05);
+}
+
+.remix-button {
+  background-color: #6a5acd;
+}
+
+.publish-button {
+  background-color: #28a745;
+}
+
+.discard-button {
+  background-color: #dc3545;
+}
+
 </style>

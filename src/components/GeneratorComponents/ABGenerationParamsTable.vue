@@ -30,7 +30,9 @@ const fetchItems = async () => {
 const generate = async (metadata) => {
   try {
     const imageUrl = await sendGenerationRequest(metadata);
+    console.log(imageUrl);
     emit("imageGenerated", imageUrl);
+    
   } catch (error) {
     console.error("Error generating image:", error);
   }
@@ -62,24 +64,24 @@ const sendGenerationRequest = async (metadata) => {
       body: JSON.stringify(data),
     });
 
+    if (response.status === 291) {
+      throw new Error("Insufficient funds 💸");
+    }
+
     if (!response.ok) {
       const errorText = await response.text();
-      toast.error(error);
       throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const blob = await response.blob();
     const imageUrl = URL.createObjectURL(blob);
+    toast.success("We're working on your image 🔧");
 
     return imageUrl;
 
   } catch (error) {
-    console.error("Failed to generate image:", error);
-    toast.error(error);
+    toast.error(error.message || "An error occurred while generating the image.");
     throw error;
-  }
-  finally{
-    toast.success("We're working on your image 🔧")
   }
 };
 
@@ -207,8 +209,11 @@ const loraModels = computed(() => items.value.filter(item => item.type !== "Chec
         </td>
       </tr>
     </table>
-    <div><button class="create-button" @click="generate(localMetadata)">Make art</button></div>
   </div>
+  <div class="button-container">
+        <button class="generator-button generate-button" @click="generate">Make art 🤖🖌️</button>
+        <button class="generator-button claim-button" @click="publish">Claim 💰💰</button>
+    </div>
 </template>
 
 <style scoped>
@@ -298,7 +303,6 @@ const loraModels = computed(() => items.value.filter(item => item.type !== "Chec
   margin-left: 10px;
 }
 
-/* Dark theme adjustments */
 .dark-input {
   background-color: #333;
   color: white;
@@ -324,14 +328,38 @@ const loraModels = computed(() => items.value.filter(item => item.type !== "Chec
   background-color: #ffcc00;
 }
 
-.create-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #ffcc00;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.button-container {
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
+
+
+.generator-button {
+  background-color: #ffcc00;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.generator-button:hover {
+  background-color: #e1ff00;
+  transform: scale(1.05);
+}
+
+.generate-button {
+  background-color: #5a5acd;
+}
+
+.claim-button {
+  background-color: #28a745;
+}
+
 </style>
 
       
