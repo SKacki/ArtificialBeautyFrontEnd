@@ -28,7 +28,7 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       const response = await fetch(`${baseLink}/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json"},
         body: JSON.stringify(credentials),
       });
       if (!response.ok) 
@@ -38,7 +38,8 @@ export const useAuthStore = defineStore("auth", () => {
         }
         else {
             const data = await response.json();
-            //setLocalStorage(data.accessToken);
+            localStorage.setItem("token",data.accessToken)
+            console.log(localStorage.getItem("token"));
             return{status:200,data};
         }
     } catch (error) {
@@ -50,7 +51,7 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       const response = await fetch(`${baseLink}/api/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
         body: JSON.stringify(credentials),
       });
       if (!response.ok) throw new Error("Invalid credentials");

@@ -3,6 +3,7 @@ import { defineProps, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import ABImageStats from "../ImagesComponents/ABImageStats.vue";
 import ABDescription from "../CommonComponents/ABDescription.vue";
+import baseLink from "@/baseUrl";
 
 const props = defineProps({
   imageId:Number,
@@ -26,7 +27,7 @@ const imageStats = ref({
   comments:props.comments,
 });
 
-const imageSrc = computed(() => `https://localhost:44307/api/Image/GetImage?imageId=${props.imageRef}`);
+const imageSrc = computed(() => `${baseLink}/api/Image/GetImage?imageId=${props.imageRef}`);
 const router = useRouter();
 
 const redirectToView = () => {

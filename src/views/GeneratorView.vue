@@ -3,11 +3,11 @@ import { ref, onMounted,computed } from "vue";
 import { useRoute } from "vue-router";
 import ABGenerationParamsTable from "@/components/GeneratorComponents/ABGenerationParamsTable.vue";
 import placeholder from '@/assets/placeholder.png';
-import ABLoadingSpinner from "@/components/CommonComponents/ABLoadingSpinner.vue";
+import baseLink from "@/baseUrl";
 
 const route = useRoute();
 const imageSrc = computed(() => {
-  return route.params.imageId > 0 ? `https://localhost:44307/api/Image/GetImageById?imageId=${route.params.imageId}` : placeholder;
+  return route.params.imageId > 0 ? `${baseLink}/api/Image/GetImageById?imageId=${route.params.imageId}` : placeholder;
 });
 const loading= ref(false);
 const generatedImage = ref(null);
@@ -37,7 +37,10 @@ const fetchMetadata = async () => {
   if(Number(imageId) !==0)
   {
   try {
-    const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imageId}`);
+    const response = await fetch(`${baseLink}/api/Image/GetImageData?imageId=${imageId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
     if (!response.ok) throw new Error("Failed to fetch metadata");
 
     const data = await response.json();
@@ -48,7 +51,10 @@ const fetchMetadata = async () => {
 
   try {
      loading.value = true;
-     const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imageId}`);
+     const response = await fetch(`${baseLink}/api/Image/GetImageMetaData?imageId=${imageId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
      meta.value = data;

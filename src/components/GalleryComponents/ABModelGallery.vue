@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import baseLink from '@/baseUrl';
 
 const props = defineProps({
   images: { type: Array, default: () => [] },
@@ -29,7 +30,7 @@ const prevImage = () => {
 <template>
   <div v-if="props.images.length" class="image-container">
     <div class="image-section">
-      <img :src="`https://localhost:44307/api/Image/GetImageById?imageId=${currentImage.id}`" 
+      <img :src="`${baseLink}/api/Image/GetImageById?imageId=${currentImage.id}`" 
            alt="Generated Image" 
            class="image" />
     </div>

@@ -6,7 +6,10 @@ export const useViewsStore = defineStore("view", () => {
   const imgGallery = ref([]);
   const fetchImages = async () => {
     try {
-      const response = await fetch(`${baseLink}/api/View/GetImageView`);
+      const response = await fetch(`${baseLink}/api/View/GetImageView`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch data");
 
       imgGallery.value = await response.json();
@@ -18,7 +21,10 @@ export const useViewsStore = defineStore("view", () => {
   const imgGalleryFiltered = ref([]);
   const searchImages = async (searchTerm) => {
     try {
-      const response = await fetch(`${baseLink}/api/View/GetImageView?searchTerm=${searchTerm}`);
+      const response = await fetch(`${baseLink}/api/View/GetImageView?searchTerm=${searchTerm}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch data");
 
       imgGalleryFiltered.value = await response.json();
@@ -30,7 +36,10 @@ export const useViewsStore = defineStore("view", () => {
   const featuredImages = ref([]);
   const getfeaturedImages = async () => {
     try {
-      const response = await fetch(`${baseLink}/api/View/GetfeatureImages`);
+      const response = await fetch(`${baseLink}/api/View/GetfeatureImages`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch data");
 
       featuredImages.value = await response.json();
@@ -42,7 +51,10 @@ export const useViewsStore = defineStore("view", () => {
   const featuredModels = ref([]);
   const getfeaturedModels = async () => {
     try {
-      const response = await fetch(`${baseLink}/api/View/GetfeatureModels`);
+      const response = await fetch(`${baseLink}/api/View/GetfeatureModels`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch data");
 
       featuredModels.value = await response.json();
@@ -54,7 +66,10 @@ export const useViewsStore = defineStore("view", () => {
   const modelView = ref([]);
   const getModelView = async (modelId) => {
     try {
-      const response = await fetch(`${baseLink}/api/View/GetModelView?modelId=${modelId}`);
+      const response = await fetch(`${baseLink}/api/View/GetModelView?modelId=${modelId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch data");
 
       modelView.value = await response.json();
@@ -66,7 +81,10 @@ export const useViewsStore = defineStore("view", () => {
   const modelGalleryView = ref([]);
   const getmodelGalleryView = async () => {
     try {
-      const response = await fetch(`${baseLink}/api/View/GetAllModels`);
+      const response = await fetch(`${baseLink}/api/View/GetAllModels`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch data");
 
       modelGalleryView.value = await response.json();

@@ -13,13 +13,6 @@ const fetchTransactions = async () => {
   } catch (err) {
     console.error("Failed to load transactions:", err);
   }
-
-  const sortArr = () => 
-  {
-    console.log('click!')
-    operations.sort((a, b) => new Date(b.operationDate) - new Date(a.operationDate));
-    sortDescending.value = !sortDescending.value
-  }
 };
 
 onMounted(fetchTransactions);

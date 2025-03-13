@@ -9,7 +9,7 @@ export const useOperationsStore = defineStore("operations", () => {
       const response = await fetch(`${baseLink}/api/Image/PostReaction`, 
         {      
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
           body: JSON.stringify(reaction)
         }
       );
@@ -25,7 +25,7 @@ export const useOperationsStore = defineStore("operations", () => {
       const response = await fetch(`${baseLink}/api/Image/TipCreator`, 
         {      
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
           body: JSON.stringify(tip)
         }
       );
@@ -40,7 +40,7 @@ export const useOperationsStore = defineStore("operations", () => {
       const response = await fetch(`${baseLink}/api/Image/PostComment`, 
         {      
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
           body: JSON.stringify(comment)
         }
       );
@@ -55,7 +55,7 @@ export const useOperationsStore = defineStore("operations", () => {
       const response = await fetch(`${baseLink}/api/User/ClaimDailyReward?userId=${userId}`, 
         {      
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
         }
       );
       const data = await response.json();
@@ -68,7 +68,10 @@ export const useOperationsStore = defineStore("operations", () => {
     const operations = ref(null);
     const fetchOperations = async (userId) => {
       try {
-        const response = await fetch(`${baseLink}/api/User/GetOperationHistory?userId=${userId}`);
+        const response = await fetch(`${baseLink}/api/User/GetOperationHistory?userId=${userId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+        });
         if (!response.ok) throw new Error("Failed to fetch data");
   
         operations.value = await response.json();

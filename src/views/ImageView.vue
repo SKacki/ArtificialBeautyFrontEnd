@@ -8,6 +8,7 @@ import { useToast } from 'vue-toastification';
 import { useUserStore } from "@/stores/UserStore";
 import { useImageStore } from "@/stores/ImageStore";
 import { storeToRefs } from "pinia";
+import baseLink from "@/baseUrl";
 
 const userStore = useUserStore();
 const imageStore = useImageStore();
@@ -26,13 +27,16 @@ const imgComments = ref(null);
 const toast = useToast();
 
 const imageSrc = computed(() => {
-  return imageRef.value ? `https://localhost:44307/api/Image/GetImage?imageId=${imageRef.value}` : null;
+  return imageRef.value ? `${baseLink}/api/Image/GetImage?imageId=${imageRef.value}` : null;
 });
 
 onMounted(async () => {
    try {
      imgId.value = route.params.imageId;
-     const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imgId.value}`);
+     const response = await fetch(`${baseLink}/api/Image/GetImageData?imageId=${imgId.value}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });;
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
      image.value = data;
@@ -42,7 +46,10 @@ onMounted(async () => {
    }
    try {
      imgId.value = route.params.imageId;
-     const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imgId.value}`);
+     const response = await fetch(`${baseLink}/api/Image/GetImageMetaData?imageId=${imgId.value}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
      meta.value = data;
@@ -51,7 +58,10 @@ onMounted(async () => {
    } 
    try {
      imgId.value = route.params.imageId;
-     const response = await fetch(`https://localhost:44307/api/Image/GetImageComments?imageId=${imgId.value}`);
+     const response = await fetch(`${baseLink}/api/Image/GetImageComments?imageId=${imgId.value}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
      if (!response.ok) throw new Error("Failed to fetch data");
      const data = await response.json();
      imgComments.value = data;

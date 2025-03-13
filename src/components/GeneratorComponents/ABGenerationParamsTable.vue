@@ -21,7 +21,10 @@ watch(() => props.metadata, (newMetadata) => {
 
 const fetchItems = async () => {
   try {
-    const response = await fetch("https://localhost:44307/api/Model/GetAll");
+    const response = await fetch("https://localhost:44307/api/Model/GetAll", {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
     if (!response.ok) throw new Error("Failed to fetch data");
     items.value = await response.json();
   } catch (error) {
@@ -75,7 +78,7 @@ const sendGenerationRequest = async (metadata) => {
 
     const response = await fetch("https://localhost:44307/api/Generator/GenerateImage", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
       body: JSON.stringify(data),
     });
 

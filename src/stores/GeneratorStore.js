@@ -10,7 +10,7 @@ export const useGeneratorStore = defineStore("generator", () => {
       const response = await fetch(`${baseLink}/api/Generator/GenerateImage`, 
         {      
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
           body: JSON.stringify(metadata)
         }
       );
@@ -24,7 +24,10 @@ export const useGeneratorStore = defineStore("generator", () => {
   const imageInfo = ref(null);
   const fetchImageInfo = async (imageId) => {
     try {
-      const response = await fetch(`${baseLink}/api/Image/GetImageData?imageId=${imageId}`);
+      const response = await fetch(`${baseLink}/api/Image/GetImageData?imageId=${imageId}`,{
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
       if (!response.ok) throw new Error("Failed to fetch metadata");
   
       imageInfo.value = await response.json();
@@ -36,7 +39,10 @@ export const useGeneratorStore = defineStore("generator", () => {
 const metadata = ref(null);
 const fetchMetadata = async (imageId) => {
     try {
-       const response = await fetch(`${baseLink}/api/Image/GetImageMetaData?imageId=${imageId}`);
+       const response = await fetch(`${baseLink}/api/Image/GetImageMetaData?imageId=${imageId}`,{
+        method: "GET",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
+      });
        if (!response.ok) throw new Error("Failed to fetch data");
        metadata.value = await response.json();
      } catch (error) {

@@ -9,7 +9,7 @@ export const useImageStore = defineStore("images", () => {
       const response = await fetch(`${baseLink}/api/Image/PublishImage`, 
         {      
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
           body: JSON.stringify(image)
         }
       );
@@ -26,7 +26,7 @@ export const useImageStore = defineStore("images", () => {
       const response = await fetch(`${baseLink}/api/Image/Remove?imageId=${imageRef}`, 
         {      
           method: "DELETE",
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
         }
       );
       const data = await response.json();
