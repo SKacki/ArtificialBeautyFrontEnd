@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import baseLink from "@/baseUrl";
 
 export const useOperationsStore = defineStore("operations", () => {
 
   const sendReaction = async (reaction) => {  
     try {
-      const response = await fetch(`https://localhost:44307/api/Image/PostReaction`, 
+      const response = await fetch(`${baseLink}/api/Image/PostReaction`, 
         {      
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -21,7 +22,7 @@ export const useOperationsStore = defineStore("operations", () => {
 
   const sendTip = async (tip) => {  
     try {
-      const response = await fetch(`https://localhost:44307/api/Image/TipCreator`, 
+      const response = await fetch(`${baseLink}/api/Image/TipCreator`, 
         {      
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -36,7 +37,7 @@ export const useOperationsStore = defineStore("operations", () => {
   }
   const postComment = async (comment) => {  
     try {
-      const response = await fetch(`https://localhost:44307/api/Image/PostComment`, 
+      const response = await fetch(`${baseLink}/api/Image/PostComment`, 
         {      
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -51,7 +52,7 @@ export const useOperationsStore = defineStore("operations", () => {
   }
   const claimDailyReward = async (userId) => {  
     try {
-      const response = await fetch(`https://localhost:44307/api/User/ClaimDailyReward?userId=${userId}`, 
+      const response = await fetch(`${baseLink}/api/User/ClaimDailyReward?userId=${userId}`, 
         {      
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -67,7 +68,7 @@ export const useOperationsStore = defineStore("operations", () => {
     const operations = ref(null);
     const fetchOperations = async (userId) => {
       try {
-        const response = await fetch(`https://localhost:44307/api/User/GetOperationHistory?userId=${userId}`);
+        const response = await fetch(`${baseLink}/api/User/GetOperationHistory?userId=${userId}`);
         if (!response.ok) throw new Error("Failed to fetch data");
   
         operations.value = await response.json();

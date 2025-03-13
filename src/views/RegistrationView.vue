@@ -15,7 +15,6 @@ const handleRegister = async () => {
   const result = await authStore.register({ username: username.value, email: email.value, password: password.value });
     if (result.status===200)
     {
-      await authStore.postUser({userName: username.value,email: email.value,joinedDate:null});
       toast.success("Registration was successful");
       router.push({ name: "login" });
     }

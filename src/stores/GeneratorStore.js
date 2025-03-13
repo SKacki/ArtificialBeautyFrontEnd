@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import baseLink from "@/baseUrl";
 
 export const useGeneratorStore = defineStore("generator", () => {
 
   const generate = async (metadata) => {  
     try {
       console.log("hey"); console.log(JSON.stringify(metadata.value));
-      const response = await fetch(`https://localhost:44307/api/Generator/GenerateImage`, 
+      const response = await fetch(`${baseLink}/api/Generator/GenerateImage`, 
         {      
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -23,7 +24,7 @@ export const useGeneratorStore = defineStore("generator", () => {
   const imageInfo = ref(null);
   const fetchImageInfo = async (imageId) => {
     try {
-      const response = await fetch(`https://localhost:44307/api/Image/GetImageData?imageId=${imageId}`);
+      const response = await fetch(`${baseLink}/api/Image/GetImageData?imageId=${imageId}`);
       if (!response.ok) throw new Error("Failed to fetch metadata");
   
       imageInfo.value = await response.json();
@@ -35,7 +36,7 @@ export const useGeneratorStore = defineStore("generator", () => {
 const metadata = ref(null);
 const fetchMetadata = async (imageId) => {
     try {
-       const response = await fetch(`https://localhost:44307/api/Image/GetImageMetaData?imageId=${imageId}`);
+       const response = await fetch(`${baseLink}/api/Image/GetImageMetaData?imageId=${imageId}`);
        if (!response.ok) throw new Error("Failed to fetch data");
        metadata.value = await response.json();
      } catch (error) {

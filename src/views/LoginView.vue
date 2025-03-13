@@ -20,8 +20,7 @@ const handleLogin = async () => {
     {
       const usr = await userStore.fetchUserByEmail(email.value);
       localStorage.setItem("userId", usr.value.id);
-      //localStorage.setItem("token", response.token);
-      toast.success("Welcome user :)");
+      toast.success(`Welcome ${usr.value.userName}`);
       router.push({ name: "home" });
     }
     else

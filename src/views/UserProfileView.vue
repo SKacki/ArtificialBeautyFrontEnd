@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref} from "vue";
+import { computed, onMounted, ref,reactive} from "vue";
 import defaultProfilePic from "@/assets/default-profile.png";
 import { useToast } from 'vue-toastification';
 import { useRoute } from "vue-router";
@@ -13,6 +13,7 @@ import { useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 const loadingUser = ref(true);
+const editing = ref(false);
 const toast = useToast();
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -27,6 +28,56 @@ const formatDate = (dateString) => {
   return dateString.split("T")[0];
 };
 
+const handleLogout = () => {
+  authStore.logout();
+  userStore.user = null;
+  router.push("/login");
+  toast.info("We miss you already") 
+};
+
+const editedUser = reactive({
+  userName: "",
+  bio: "",
+  profilePic: "",
+});
+
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      editedUser.profilePic = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const saveProfile = async () => {
+  const newUser =(
+  {
+    id: userView.value.user.id,
+    userName: editedUser.userName,
+    email: userView.value.user.email,
+    joinedDate: userView.value.user.joinedDate,
+    bio: editedUser.bio,
+    followersCount: userView.value.user.followersCount,
+    followingCount: userView.value.user.followingCount,
+    imagesCount: userView.value.user.imagesCount,
+    currency: userView.value.user.currency,
+    profilePic: null
+  });
+  await userStore.updateUser(newUser);
+  await userStore.fetchView(Number(route.params.userId))
+  editing.value = false;
+};
+
+const cancelEdit = () => {
+  editing.value = false;
+  editedUser.userName = props.userView.user.userName;
+  editedUser.bio = props.userView.user.bio;
+  editedUser.profilePic = props.userView.profilePic;
+};
+
 onMounted(async () => {
   try {
     await userStore.fetchView(Number(route.params.userId));
@@ -36,14 +87,6 @@ onMounted(async () => {
     loadingUser.value = false;
   }
 });
-
-const handleLogout = () => {
-  authStore.logout();
-  userStore.user = null;
-  router.push("/login");
-  toast.info("We miss you already") 
-};
-
 </script>
 
 
@@ -52,10 +95,16 @@ const handleLogout = () => {
   <div v-else class="profile-container">
     <div class="profile-pic">
       <img :src="userView.profilePic || defaultProfilePic" alt="Profile Picture" />
+      <input v-if="editing" type="file" @change="handleFileUpload" accept="image/*" />
     </div>
+
     <div class="profile-details">
-      <h2>{{ userView.user.userName }}</h2>
-      <p class="bio">{{ userView.user.bio }}</p>
+      <h2 v-if="!editing">{{ userView.user.userName }}</h2>
+      <input v-else v-model="editedUser.userName" placeholder="Username" />
+
+      <p class="bio" v-if="!editing">{{ userView.user.bio }}</p>
+      <textarea v-else v-model="editedUser.bio" placeholder="Bio"></textarea>
+
       <p><strong>Joined:</strong> {{ formatDate(userView.user.joinedDate) }}</p>
 
       <div class="stats">
@@ -64,8 +113,11 @@ const handleLogout = () => {
         <p><strong>Images:</strong> {{ userView.user.imagesCount }}</p>
       </div>
 
-      <button v-if="!myProfile" class="follow-btn">Follow</button>
-      <button v-if="myProfile" @click="handleLogout" class="logout-btn">Logout</button>
+      <button v-if="!myProfile" class="profile-btn follow-btn">Follow</button>
+      <button v-if="myProfile && !editing" @click="editing = true" class="btn edit-btn">Edit Profile</button>
+      <button v-if="myProfile && editing" @click="saveProfile" class="btn save-btn">Save</button>
+      <button v-if="myProfile && editing" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
+      <button v-if="myProfile && !editing" @click="handleLogout" class="btn logout-btn">Logout</button>
     </div>
   </div>
 
@@ -114,34 +166,23 @@ const handleLogout = () => {
       display: flex;
       justify-content: space-around;
     }
-    
-    .follow-btn {
-      background: #ff9800;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin-top: 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    
-    .follow-btn:hover {
-      background: #e68900;
-    }
-    .logout-btn {
+
+    .btn {
       margin-top: 10px;
       padding: 10px 15px;
-      background-color: #d9534f;
       color: white;
+      background: #524f4f;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       transition: 0.3s;
+      font-weight: bold;
     }
 
-  .logout-btn:hover {
-    background-color: #c9302c;
-  }
-  </style>
+    .follow-btn:hover { background: #e68900; }
+    .edit-btn:hover { background: #1976d2; }
+    .save-btn:hover { background: #388e3c; }
+    .cancel-btn:hover { background: #d32f2f; }
+    .logout-btn:hover { background: #c9302c; }
+</style>
   
