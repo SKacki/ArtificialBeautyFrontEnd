@@ -2,6 +2,7 @@
 import { reactive, ref, computed, onMounted, watch, defineEmits } from "vue";
 import { useToast } from 'vue-toastification';
 import { useOperationsStore } from "@/stores/OperationsStore";
+import baseLink from "@/baseUrl";
 
 const store = useOperationsStore();
 const toast = useToast();
@@ -21,7 +22,7 @@ watch(() => props.metadata, (newMetadata) => {
 
 const fetchItems = async () => {
   try {
-    const response = await fetch("https://localhost:44307/api/Model/GetAll", {
+    const response = await fetch(`${baseLink}/api/Model/GetAll`, {
         method: "GET",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
       });

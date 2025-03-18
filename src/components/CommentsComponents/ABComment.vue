@@ -22,7 +22,7 @@ watch(
     comments.value = newVals;
     comments.value = newVals.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
   },
-  //{ immediate: true } <-this throws errors
+  { immediate: true } //<-this throws errors
 );
 
 const addComment = async () => {

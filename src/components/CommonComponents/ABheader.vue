@@ -3,6 +3,7 @@ import { RouterLink, useRouter } from 'vue-router';
 import ABSearchBar from './ABSearchBar.vue';
 import logo from '@/assets/logo.png';
 import defaultProfilePic from '@/assets/default-profile.png';
+import baseLink from '@/baseUrl';
 
 const router = useRouter();
 const props = defineProps({
@@ -42,7 +43,7 @@ const redirectToView = (view) => {
 
         <div class="user-info">
           <RouterLink to="/user/1" class="profile-pic">
-            <img :src="props.user.profilePic || defaultProfilePic" alt="Profile Picture" />
+            <img :src="`${baseLink}/api/Image/GetProfilePic?imageId=${props.user.profilePic}` || defaultProfilePic" alt="Profile Picture" />
           </RouterLink>
         </div>
       </nav>

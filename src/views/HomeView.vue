@@ -15,7 +15,7 @@ const error = ref(null);
 
 onMounted(async () => {
    try {
-     await userStore.fetchData(1);
+     await userStore.fetchData(localStorage.getItem("userId"));
    } catch (err) {
      console.error("Failed to load user data:", err);
    }

@@ -36,9 +36,8 @@ export const useUserStore = defineStore("user", () => {
   const fetchUserByEmail = async (email) => {
     try {
       const response = await fetch(`${baseLink}/api/User/GetUserByEmail?email=${email}`,{
-        method: "POST",
+        method: "GET",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
-        body: JSON.stringify(credentials),
       });
       if (!response.ok) throw new Error("Failed to fetch user data");
 
@@ -64,5 +63,36 @@ export const useUserStore = defineStore("user", () => {
       console.error("Error updating profile:", error);}
   };
 
-  return { user,userView, fetchData,fetchView,fetchUserByEmail,updateUser };
+  const uploadProfilePic = async (formData) => {
+    try {
+      const response = await fetch(`${baseLink}/api/User/UploadProfilePicture`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}`},
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to upload profile picture.");
+      }} catch (error) {
+      console.error("Error uploading profile picture:", error);}
+  };
+
+  const follow = async (followerDto) => {
+    try {
+      const response = await fetch(`${baseLink}/api/User/FollowUser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}`},
+        body: JSON.stringify(followerDto),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to upload profile picture.");
+      }} catch (error) {
+      console.error("Error uploading profile picture:", error);}
+  };
+
+
+  return { user,userView, fetchData,fetchView,fetchUserByEmail,updateUser,uploadProfilePic,follow };
 });

@@ -9,6 +9,7 @@ import { useUserStore } from "@/stores/UserStore";
 import { useAuthStore } from "@/stores/AuthStore";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import baseLink from "@/baseUrl";
 
 const route = useRoute();
 const router = useRouter();
@@ -41,15 +42,10 @@ const editedUser = reactive({
   profilePic: "",
 });
 
-const handleFileUpload = (event) => {
+const handleFileUpload = async (event) => {
   const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      editedUser.profilePic = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
+  if (!file) return;
+  localStorage.setItem("profilePic",file);
 };
 
 const saveProfile = async () => {
@@ -64,9 +60,16 @@ const saveProfile = async () => {
     followingCount: userView.value.user.followingCount,
     imagesCount: userView.value.user.imagesCount,
     currency: userView.value.user.currency,
-    profilePic: null
+    profilePic: userView.value.user.profilePic,
   });
   await userStore.updateUser(newUser);
+
+  const profilePic = localStorage.getItem("profilePic");
+  if(profilePic != null){
+    const formData = new FormData();
+    formData.append("profilePic", profilePic);
+    await userStore.uploadProfilePic(formData);
+  }
   await userStore.fetchView(Number(route.params.userId))
   editing.value = false;
 };
@@ -78,6 +81,17 @@ const cancelEdit = () => {
   editedUser.profilePic = props.userView.profilePic;
 };
 
+const follow = async () => {
+  try {
+    const dto = { FollowerId: Number(localStorage.getItem("userId")), FollowingId: Number(route.params.userId) };
+    await userStore.follow(dto);
+  } catch (err) {
+    console.error("Operation failed:", err);
+  } finally {
+    loadingUser.value = false;
+  }
+};
+
 onMounted(async () => {
   try {
     await userStore.fetchView(Number(route.params.userId));
@@ -85,6 +99,7 @@ onMounted(async () => {
     console.error("Failed to load user data on mount:", err);
   } finally {
     loadingUser.value = false;
+    console.log(localStorage.getItem('userId'));
   }
 });
 </script>
@@ -94,7 +109,7 @@ onMounted(async () => {
   <div v-if="loadingUser"><ABLoadingSpinner /></div>
   <div v-else class="profile-container">
     <div class="profile-pic">
-      <img :src="userView.profilePic || defaultProfilePic" alt="Profile Picture" />
+      <img :src="`${baseLink}/api/Image/GetProfilePic?imageId=${userView.user.profilePic}`" alt="Profile Picture" />
       <input v-if="editing" type="file" @change="handleFileUpload" accept="image/*" />
     </div>
 
@@ -113,7 +128,7 @@ onMounted(async () => {
         <p><strong>Images:</strong> {{ userView.user.imagesCount }}</p>
       </div>
 
-      <button v-if="!myProfile" class="profile-btn follow-btn">Follow</button>
+      <button v-if="!myProfile" @click="follow" class="btn follow-btn">Follow</button>
       <button v-if="myProfile && !editing" @click="editing = true" class="btn edit-btn">Edit Profile</button>
       <button v-if="myProfile && editing" @click="saveProfile" class="btn save-btn">Save</button>
       <button v-if="myProfile && editing" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
@@ -123,7 +138,9 @@ onMounted(async () => {
 
   <div v-if="userView?.images" class="gallery">
     <ABGallery :images="userView.images" :user="userView.user" :header="'Gallery'" :redirect="'img'" />
-    <ABGallery :images="userView.unpublishedImages" :user="userView.user" :header="'Unpublished'" :redirect="'img'" />
+    <div v-if="myProfile">
+      <ABGallery :images="userView.unpublishedImages" :user="userView.user" :header="'Unpublished'" :redirect="'img'" />
+    </div>
   </div>
 </template>
   
