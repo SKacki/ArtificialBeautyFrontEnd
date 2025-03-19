@@ -77,7 +77,8 @@ const sendGenerationRequest = async (metadata) => {
       description: "Untitled",
     };
 
-    const response = await fetch("https://localhost:44307/api/Generator/GenerateImage", {
+    toast.info("We're working on your image 🔧");
+    const response = await fetch(`${baseLink}/api/Generator/GenerateImage`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
       body: JSON.stringify(data),
@@ -94,7 +95,7 @@ const sendGenerationRequest = async (metadata) => {
 
     const blob = await response.blob();
     const imageUrl = URL.createObjectURL(blob);
-    toast.success("We're working on your image 🔧");
+    toast.success("Your image is ready");
 
     return imageUrl;
 
@@ -112,14 +113,17 @@ const handleSeed = () => {
 
 const samplers = ref([
   "Euler",
-  "Euler_A",
-  "Huen",
-  "DMP2"
+  "Euler_Aancestral",
+  "Heun",
+  "DMP_2",
+  "DPM_Fast",
+  "DDIM",
 ]);
 const schedulers = ref([
 "Normal",
 "Karras",
-"SGM_Uniform"
+"SGM_Uniform",
+"Simple",
 ]);
 
 onMounted(fetchItems);

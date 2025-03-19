@@ -42,7 +42,7 @@ const redirectToView = (view) => {
         </ul>
 
         <div class="user-info">
-          <RouterLink to="/user/1" class="profile-pic">
+          <RouterLink :to="`/user/${props.user.id}`" class="profile-pic">
             <img :src="`${baseLink}/api/Image/GetProfilePic?imageId=${props.user.profilePic}` || defaultProfilePic" alt="Profile Picture" />
           </RouterLink>
         </div>

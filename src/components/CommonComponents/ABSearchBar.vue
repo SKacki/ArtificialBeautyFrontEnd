@@ -1,10 +1,15 @@
 <script setup>
 import {ref} from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const searchTerm = ref("");
 const selectedOption = ref("")
 async function search() {
-
+  if(selectedOption.value === "models")
+    router.push({ name: "models", params: { query: searchTerm.value } });
+  else if(selectedOption.value === "images")
+    router.push({ name: "images", params: { query: searchTerm.value } });
 }
 </script>
 
@@ -13,7 +18,7 @@ async function search() {
       <select v-model="selectedOption" class="dropdown">
         <option value="models">Models</option>
         <option value="images">Images</option>
-        <option value="users">users</option>
+        <!--<option value="users">users</option>-->
       </select>
       
       <input type="text" v-model="searchTerm" class="search-bar">

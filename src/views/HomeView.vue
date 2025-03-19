@@ -4,7 +4,9 @@ import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/UserStore";
 import { useViewsStore } from "@/stores/ViewsStore";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const viewsStore = useViewsStore();
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
@@ -15,9 +17,10 @@ const error = ref(null);
 
 onMounted(async () => {
    try {
-     await userStore.fetchData(localStorage.getItem("userId"));
+     var response = await userStore.fetchData(localStorage.getItem("userId"));
    } catch (err) {
      console.error("Failed to load user data:", err);
+     router.push({ name: "login" });
    }
   try {
     await viewsStore.getfeaturedImages();

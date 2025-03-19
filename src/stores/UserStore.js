@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import baseLink from "@/baseUrl";
+import { useRouter } from "vue-router";
 
 export const useUserStore = defineStore("user", () => {
+  const router = useRouter();
   const user = ref(null);
   const fetchData = async (id) => {
     try {
@@ -10,8 +12,10 @@ export const useUserStore = defineStore("user", () => {
         method: "GET",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}`},
       });
-      if (!response.ok) throw new Error("Failed to fetch user data");
-
+      if (!response.ok){ 
+        const data = await response.json();
+        return {status:response.status,data};
+        }
       user.value = await response.json();
     } catch (error) {
       console.error("UserStore Error:", error);
